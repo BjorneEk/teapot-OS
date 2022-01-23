@@ -13,8 +13,9 @@ VM = qemu-system-i386
 C_FLAGS = -g -m32 -ffreestanding -c
 LNKR_FLAGS = -m elf_i386
 
+HEADERS = $(wildcard src/kernel/*.h)
 BOOT_SOURCES = $(wildcard src/bootloader/*.S)
-C_SOURCES = $(wildcard src/kernel/*.c)
+C_SOURCES = $(wildcard src/kernel/*.c src/kernel/drivers/lib/*.c)
 OBJ = ${C_SOURCES:.c=.o}
 
 # First rule is the one executed when no parameters are fed to the Makefile
@@ -26,7 +27,7 @@ kernel.bin: src/bootloader/kernel-entry.o $(OBJ)
 %.o: %.S
 	$(ASMBLR) $< -f elf -o $@
 
-%.o: %.c
+%.o: %.c ${HEADERS}
 	$(CC) $(C_FLAGS) $< -o $@
 
 $(MBR): src/bootloader/boot.S
@@ -42,3 +43,4 @@ clean:
 	$(RM) *.bin *.o *.dis .*.swp
 	$(RM) src/bootloader/*.bin src/bootloader/*.o src/bootloader/.*.swp
 	$(RM) src/kernel/*.bin src/kernel/*.o src/kernel/.*.swp
+	$(RM) src/kernel/drivers/lib/*.o src/kernel/drivers/lib/.*.swp

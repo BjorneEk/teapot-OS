@@ -1,7 +1,7 @@
 
 ;;;
-;;; @author Gustaf Franzén
-;;; main bootloader 
+;;; @author Gustaf Franzén :: https://github.com/BjorneEk;
+;;; main bootloader
 ;;;
 
 
@@ -17,8 +17,8 @@ mov [BOOT_DRIVE], dl
 
 ; setup stack
 mov bp, 0x9000
-mov sp, bp 
- 
+mov sp, bp
+
 mov al, 't'
 call pchar
 mov al, 'e'
@@ -54,7 +54,8 @@ call pchar
 mov al, 'g'
 call pchar
 
-
+; switch video mode to 640 x 480 graphical mode
+call set_video_mode
 call load_kernel
 call switch_to_32bit
 jmp $
@@ -62,7 +63,13 @@ jmp $
 pchar:
 	mov ah, 0x0e
 	int 0x10
-	ret 
+	ret
+
+set_video_mode:
+	mov al, 0x13
+	mov ah, 0
+	int 0x10
+	ret
 
 %include "src/bootloader/disk.S"
 %include "src/bootloader/gdt.S"
