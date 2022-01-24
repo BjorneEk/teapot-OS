@@ -27,7 +27,10 @@ typedef struct color {
 #define COLOR_BLUE (color_t){.r=0b000, .g=0b000, .b=0b11}
 #define COLOR_PURPLE (color_t){.r=0b101, .g=0b001, .b=0b11}
 
-#define COLOR_WHITE (color_t){.r=0b111, .g=0b11, .b=0b11}
-#define COLOR_BLACK (color_t){.r=0b111, .g=0b11, .b=0b11}
+#define COLOR_WHITE (color_t){.r=0b111, .g=0b111, .b=0b11}
+#define COLOR_BLACK (color_t){.r=0b000, .g=0b000, .b=0b00}
+
+#define COLOR_STATBAR (color_t){.r=0b100, .g=0b100, .b=0b10}
+#define COLOR_BACKGROUND (color_t){.r=0b000, .g=0b100, .b=0b01}
 
 #endif /* GRAPHICS_H */
