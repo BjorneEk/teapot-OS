@@ -10,13 +10,13 @@
 [org 0x7c00]
 
 ; where to load the kernel to
-KERNEL_OFFSET equ 0x1000
+KERNEL_OFFSET equ 0x9000
 
 ; BIOS sets boot drive in 'dl'; store for later use
 mov [BOOT_DRIVE], dl
 
 ; setup stack
-mov bp, 0x9000
+mov bp, 0x8000
 mov sp, bp
 
 

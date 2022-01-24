@@ -7,6 +7,7 @@
 #include "idt.h"
 #include "../drivers/include/ports.h"
 #include "../graphics/graphics.h"
+#include "../utils/include/string.h"
 
 isr_t interrupt_handlers[256];
 
@@ -126,15 +127,8 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers_t *r) {
-	print_string("received interrupt: ");
 	char s[3];
-	//int_to_string(r->int_no, s);
-	//print_string(s);
-	//print_nl();
-	//print_string(exception_messages[r->int_no]);
-	//print_nl();
-	draw_string(45,1, "rec int: ", COLOR_RED);
-	draw_string(90,1, exception_messages[r->int_no], COLOR_WHITE);
+	int_to_string(r->int_no, s);
 }
 
 void register_interrupt_handler(uint8_t n, isr_t handler) {
