@@ -15,6 +15,10 @@ typedef signed char      int8_t;
 typedef signed short     int16_t;
 typedef signed int       int32_t;
 
+#define low_16(address) (uint16_t)((address) & 0xFFFF)
+#define high_16(address) (uint16_t)(((address) >> 16) & 0xFFFF)
+
+
 #ifdef SYS_64_BIT
 typedef unsigned long long int64_t;
 typedef signed long long int64_t;
