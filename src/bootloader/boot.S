@@ -1,8 +1,8 @@
 
-;;;
-;;; @author Gustaf Franzén :: https://github.com/BjorneEk;
-;;; main bootloader
-;;;
+;;------------------------------------------------------------;;
+;;   @author Gustaf Franzén :: https://github.com/BjorneEk    ;;
+;;                    main bootloader                         ;;
+;;------------------------------------------------------------;;
 
 
 
@@ -18,6 +18,7 @@ mov [BOOT_DRIVE], dl
 ; setup stack
 mov bp, 0x9000
 mov sp, bp
+
 
 mov al, 't'
 call pchar
@@ -77,16 +78,16 @@ set_video_mode:
 
 [bits 16]
 load_kernel:
-    mov bx, KERNEL_OFFSET ; bx -> destination
-    mov dh, 2             ; dh -> num sectors
-    mov dl, [BOOT_DRIVE]  ; dl -> disk
-    call disk_read
-    ret
+	mov bx, KERNEL_OFFSET ; bx -> destination
+	mov dh, 31             ; dh -> num sectors
+	mov dl, [BOOT_DRIVE]  ; dl -> disk
+	call disk_read
+	ret
 
 [bits 32]
 BEGIN_32BIT:
-    call KERNEL_OFFSET ; give control to the kernel
-    jmp $ ; loop in case kernel returns
+	call KERNEL_OFFSET ; give control to the kernel
+	jmp $ ; loop in case kernel returns
 
 ; boot drive variable
 BOOT_DRIVE db 0
