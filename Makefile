@@ -13,16 +13,16 @@ VM = qemu-system-i386
 C_FLAGS = -g -m32 -ffreestanding -c
 LNKR_FLAGS = -m elf_i386
 
-HEADERS = $(wildcard src/kernel/drivers/include/*.h src/kernel/utils/include/*.h src/kernel/graphics/*.h)
+HEADERS = $(wildcard src/kernel/drivers/include/*.h src/kernel/utils/include/*.h src/kernel/graphics/*.h src/kernel/cpu/*.h)
 BOOT_SOURCES = $(wildcard src/bootloader/*.S)
-C_SOURCES = $(wildcard src/kernel/*.c src/kernel/drivers/lib/*.c src/kernel/utils/lib/*.c src/kernel/graphics/*.c)
-OBJ = ${C_SOURCES:.c=.o}
+C_SOURCES = $(wildcard src/kernel/*.c src/kernel/drivers/lib/*.c src/kernel/utils/lib/*.c src/kernel/graphics/*.c src/kernel/cpu/*.c)
+OBJ = ${C_SOURCES:.c=.o src/kernel/cpu/interrupt.o}
 
 # First rule is the one executed when no parameters are fed to the Makefile
 all: run
 
 kernel.bin: src/bootloader/kernel-entry.o $(OBJ)
-	$(LNKR) $(LNKR_FLAGS) -o $@ -Ttext 0x1000 $^ --oformat binary
+	$(LNKR) $(LNKR_FLAGS) -o $@ -Ttext 0x9000 $^ --oformat binary
 
 %.o: %.S
 	$(ASMBLR) $< -f elf -o $@
@@ -48,14 +48,6 @@ run: $(TARGET)
 	$(VM) -fda $<
 
 clean:
-	$(RM) *.o *.dis .*.swp
-	$(RM) src/bootloader/*.bin src/bootloader/*.o src/bootloader/.*.swp
-	$(RM) src/kernel/*.bin src/kernel/*.o src/kernel/.*.swp
-	$(RM) src/kernel/drivers/lib/*.o src/kernel/drivers/lib/.*.swp
-	$(RM) src/kernel/utils/lib/*.o src/kernel/utils/lib/*.swp
-	$(RM) src/kernel/graphics/*.o src/kernel/graphics/*.swp
-
-reset:
 	$(RM) *.bin
 	$(RM) *.o *.dis .*.swp
 	$(RM) src/bootloader/*.bin src/bootloader/*.o src/bootloader/.*.swp
@@ -63,3 +55,13 @@ reset:
 	$(RM) src/kernel/drivers/lib/*.o src/kernel/drivers/lib/.*.swp
 	$(RM) src/kernel/utils/lib/*.o src/kernel/utils/lib/*.swp
 	$(RM) src/kernel/graphics/*.o src/kernel/graphics/*.swp
+	$(RM) src/kernel/cpu/*.o src/kernel/cpu/*.swp
+
+cst: #clean but save target
+	$(RM) *.o *.dis .*.swp
+	$(RM) src/bootloader/*.bin src/bootloader/*.o src/bootloader/.*.swp
+	$(RM) src/kernel/*.bin src/kernel/*.o src/kernel/.*.swp
+	$(RM) src/kernel/drivers/lib/*.o src/kernel/drivers/lib/.*.swp
+	$(RM) src/kernel/utils/lib/*.o src/kernel/utils/lib/*.swp
+	$(RM) src/kernel/graphics/*.o src/kernel/graphics/*.swp
+	$(RM) src/kernel/cpu/*.o src/kernel/cpu/*.swp
