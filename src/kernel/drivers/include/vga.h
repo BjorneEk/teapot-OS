@@ -3,6 +3,7 @@
 
 #include "../../utils/include/int.h"
 
+
 ////////////////////////////////////////////////////////////////////////////
 ///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
 ////////////////////////////////////////////////////////////////////////////
@@ -29,5 +30,12 @@ void clear_pixel(uint16_t pos_x, uint16_t pos_y);
 void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color);
 
 void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color);
+
+///
+/// put a character from the font in font.h: FONT5X7[i] on the screen
+/// @param i The index within the font character array
+/// returns pointer to video ram where potential following characters should be places
+///
+uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color);
 
 #endif /* VGA_H */

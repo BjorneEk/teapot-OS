@@ -5,6 +5,7 @@
 #endif
 #include "../include/vga.h"
 #include "../../utils/include/math.h"
+#include "../../graphics/font.h"
 
 ////////////////////////////////////////////////////////////////////////////
 ///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
@@ -80,4 +81,16 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 			*(v_ram + x + y) = color;
 		}
 	}
+}
+
+uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
+	uint8_t * v_ram = v_mem_start;
+	size_t x;
+	for (size_t y = 0; y < FONT_HEIGHT; y++) {
+		for (x = 0; x < FONT_WIDTH; x++) {
+			if (FONT5X7[i][y][x])
+				*(v_ram + x + (y*VGA_WIDTH)) = color;
+		}
+	}
+	return (uint8_t *)(v_ram + x + 1);
 }
