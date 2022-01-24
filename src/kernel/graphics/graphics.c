@@ -5,6 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "graphics.h"
+#include "../utils/include/string.h"
 
 color_t DRAW_COLOR = (color_t){.r=0b111, .g=0b111, .b=0b11};
 
@@ -54,9 +55,6 @@ uint16_t get_char_idx(uint8_t c) {
 	if(c == ']') return SQ_BRACET_R_IDX;
 	if(c == '[') return SQ_BRACET_L_IDX;
 
-	if((uint8_t)c == 0xE5 || (uint8_t)c == 0xC5) return NUM_IDX_START - 3;
-	if((uint8_t)c == 0xE4 || (uint8_t)c == 0xC4 || (uint8_t)c == 0xC3) return NUM_IDX_START - 2;
-	if((uint8_t)c == 0xF6 || (uint8_t)c == 0xD6) return NUM_IDX_START - 1;
 	return INVALID_IDX;
 }
 
@@ -64,7 +62,7 @@ void draw_char(int32_t x, int32_t y, char c, color_t clr) {
 	memset_5x7font(((VGA_MEM+x)+(VGA_WIDTH * y)), get_char_idx(c), clr.c);
 }
 
-void draw_string(int32_t x, int32_t y, char * str, color_t clr) {
+uint8_t * draw_string(int32_t x, int32_t y, char * str, color_t clr) {
 	uint8_t * v_ram = memset_5x7font(((VGA_MEM+x)+(VGA_WIDTH * y)), get_char_idx(*str), clr.c);
 	str++;
 	while(*str) {
@@ -76,4 +74,30 @@ void draw_string(int32_t x, int32_t y, char * str, color_t clr) {
 		}
 		str++;
 	}
+	return v_ram;
+}
+
+void set_last_key(char * key) {
+	fill_rect(VGA_WIDTH - (STATUS_BAR_KEY_WIDTH+1), 1, STATUS_BAR_KEY_WIDTH, STATUS_BAR_HEIGHT - 2, COLOR_BACKGROUND);
+	draw_string((VGA_WIDTH - (STATUS_BAR_KEY_WIDTH+1)) + 2, 2, key, COLOR_GREEN);
+}
+
+void set_last_key_with_trailing(char * key, char c) {
+	fill_rect(VGA_WIDTH - (STATUS_BAR_KEY_WIDTH+1), 1, STATUS_BAR_KEY_WIDTH, STATUS_BAR_HEIGHT - 2, COLOR_BACKGROUND);
+	uint8_t * v_ram = draw_string((VGA_WIDTH - (STATUS_BAR_KEY_WIDTH+1)) + 2, 2, key, COLOR_GREEN);
+	memset_5x7font(v_ram, get_char_idx(c), COLOR_RED.c);
+}
+
+void set_os_name(char * name) {
+	fill_rect(1, 1, STATUS_BAR_OS_NAME_WIDTH, STATUS_BAR_HEIGHT - 2, COLOR_BACKGROUND);
+	draw_string(2, 2, name, COLOR_YELLOW);
+}
+
+void display_mouse(char * desc, char * msg) {
+	fill_rect(2 + STATUS_BAR_OS_NAME_WIDTH, 1, STATUS_BAR_MESSAGE_WIDTH, STATUS_BAR_HEIGHT - 2, COLOR_BACKGROUND);
+	draw_string(3 + STATUS_BAR_OS_NAME_WIDTH, 2, desc, COLOR_RED);
+	draw_string(50 + STATUS_BAR_OS_NAME_WIDTH, 2, msg, COLOR_WHITE);
+}
+void refresh_cursor(int32_t x, int32_t y) {
+	update_cursor(((VGA_MEM+x)+(VGA_WIDTH * y)));
 }

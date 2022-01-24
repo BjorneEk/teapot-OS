@@ -38,4 +38,8 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color);
 ///
 uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color);
 
+void vga_init_cursor();
+
+void update_cursor(uint8_t * v_mem_start);
+
 #endif /* VGA_H */

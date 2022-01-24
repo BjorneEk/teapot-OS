@@ -4,22 +4,42 @@
 #define asm __asm__ volatile
 #endif
 #include "../include/vga.h"
+#include "../include/ports.h"
 #include "../../utils/include/math.h"
 #include "../../graphics/font.h"
+#include "../../graphics/cursor.h"
+#include "../../graphics/color.h"
+#include "../include/mouse.h"
+
 
 ////////////////////////////////////////////////////////////////////////////
 ///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
 ////////////////////////////////////////////////////////////////////////////
 
-uint8_t in_portb(uint16_t port) {
-	uint8_t res;
-	__asm__("in %%dx, %%al" : "=a" (res) : "d" (port));
-	return res;
-}
+cursor_t cursor =
+{
+	.img={
+		{2,0,0,0,0},
+		{2,2,0,0,0},
+		{2,1,2,0,0},
+		{2,1,1,2,0},
+		{2,1,1,1,2},
+		{2,1,2,2,2},
+		{2,2,0,0,0}},
+	.prev={
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0},
+		{0,0,0,0,0}}
+};
+uint8_t * prev_c = (uint8_t*)0xA0000;
 
-void out_portb(uint16_t port, uint8_t data) {
-	__asm__("out %%al, %%dx" : : "a" (data), "d" (port));
-}
+color_t cursor_color = (color_t){.r=0b111, .g=0b111, .b=0b11};
+
+
 
 void vga_init_palette() {
 	out_portb(VGA_PALETTE_MASK, 0xFF);
@@ -71,6 +91,7 @@ void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 			y0 += sy;
 		}
 	}
+	update_cursor(prev_c);
 }
 
 
@@ -81,6 +102,7 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 			*(v_ram + x + y) = color;
 		}
 	}
+	update_cursor(prev_c);
 }
 
 uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
@@ -92,5 +114,54 @@ uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
 				*(v_ram + x + (y*VGA_WIDTH)) = color;
 		}
 	}
+	update_cursor(prev_c);
 	return (uint8_t *)(v_ram + x + 1);
+}
+
+
+
+
+void place_cursor(uint8_t * v_mem_start){
+	uint8_t * v_ram = v_mem_start;
+	for (size_t y = 0; y < CURSOR_IMG_HEIGHT; y++) {
+		for (size_t x = 0; x < CURSOR_IMG_WIDTH; x++) {
+			if(cursor.img[y][x] == 2) {
+				*(v_ram + x + (y*VGA_WIDTH)) = COLOR_BLACK.c;
+			} else if (cursor.img[y][x] == 1) {
+				*(v_ram + x + (y*VGA_WIDTH)) = cursor_color.c;
+			}
+		}
+	}
+}
+
+void read_cursor(uint8_t * v_mem_start){
+	uint8_t * v_ram = v_mem_start;
+	for (size_t y = 0; y < CURSOR_IMG_HEIGHT; y++) {
+		for (size_t x = 0; x < CURSOR_IMG_WIDTH; x++) {
+			if (cursor.img[y][x] != 0) cursor.prev[y][x].c = *(v_ram + x + (y*VGA_WIDTH));
+		}
+	}
+}
+
+void restore_cursor(){
+	uint8_t * v_ram = prev_c;
+	for (size_t y = 0; y < CURSOR_IMG_HEIGHT; y++) {
+		for (size_t x = 0; x < CURSOR_IMG_WIDTH; x++) {
+			if (cursor.img[y][x] != 0) *(v_ram + x + (y*VGA_WIDTH)) = cursor.prev[y][x].c;
+		}
+	}
+}
+
+void update_cursor(uint8_t * v_mem_start) {
+	restore_cursor();
+	prev_c = v_mem_start;
+	read_cursor(prev_c);
+	place_cursor(prev_c);
+}
+
+
+void vga_init_cursor(){
+	prev_c = vram_at(320, 200);
+	read_cursor(prev_c);
+	place_cursor(prev_c);
 }
