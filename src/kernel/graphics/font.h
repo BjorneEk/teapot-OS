@@ -33,6 +33,6 @@
 ///
 
 extern char * font_supported_chars;
-extern uint8_t FONT5X7[50][7][5];
+extern const uint8_t FONT5X7[50][7][5];
 
 #endif /* FONT_H */

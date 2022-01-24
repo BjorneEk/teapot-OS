@@ -2,7 +2,7 @@
 
 char * font_supported_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ0123456789.,:;!?";
 
-uint8_t FONT5X7[50][7][5] = {
+const uint8_t FONT5X7[50][7][5] = {
 	{
 		{0,1,1,1,0},
 		{1,0,0,0,1},
