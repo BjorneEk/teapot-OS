@@ -127,8 +127,7 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers_t *r) {
-	char s[3];
-	int_to_string(r->int_no, s);
+
 }
 
 void register_interrupt_handler(uint8_t n, isr_t handler) {

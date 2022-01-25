@@ -5,6 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "../include/string.h"
+#include "../include/math.h"
+
 
 
 uint32_t strlen(char * s) {
@@ -22,15 +24,43 @@ void reverse(char s[]) {
 	}
 }
 
-void int_to_string(int32_t n, char str[]) {
-	int32_t i, sign;
-	if ((sign = n) < 0) n = -n;
-	i = 0;
-	do {
-		str[i++] = n % 10 + '0';
-	} while ((n /= 10) > 0);
+int32_t int_to_str(int32_t x, char str[], int32_t d) {
+	int32_t i = 0;
+	while (x) {
+		str[i++] = (x % 10) + '0';
+		x = x / 10;
+	}
 
-	if (sign < 0) str[i++] = '-';
+	// If number of digits required is more, then
+	// add 0s at the beginning
+	while (i < d)
+		str[i++] = '0';
+
+		reverse(str);
 	str[i] = '\0';
-	reverse(str);
+	return i;
+}
+
+void ftoa(float n, char * res, int32_t afterpoint) {
+	// Extract integer part
+	int32_t ipart = (int32_t)n;
+
+	// Extract floating part
+	int32_t fpart = n - (float)ipart;
+
+	// convert integer part to string
+	int32_t i = int_to_str(ipart, res, 0);
+
+	// check for display option after point
+	if (afterpoint != 0) {
+		res[i] = '.'; // add dot
+		/**
+		*  Get the value of fraction part upto given no.
+		*  of points after dot. The third parameter
+		*  is needed to handle cases like 233.007
+		**/
+		fpart = fpart * pow(10, afterpoint);
+
+		int_to_str((int)fpart, res + i + 1, afterpoint);
+	}
 }

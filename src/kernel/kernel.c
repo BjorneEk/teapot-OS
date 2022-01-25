@@ -8,6 +8,9 @@
 #include "graphics/graphics.h"
 #include "drivers/include/keyboard.h"
 #include "drivers/include/mouse.h"
+#include "utils/include/math.h"
+#include "utils/include/string.h"
+
 #include "cpu/idt.h"
 #include "cpu/isr.h"
 
@@ -69,12 +72,27 @@ void main() {
 	init_mouse();
 
 
+
+	float s = sin(PI);
+	char rs[10];
+	ftoa(s, rs, 5);
+	draw_string((VGA_WIDTH / 2), 70, rs, COLOR_BLACK);
+
+	/*
+	for (size_t i = 0; i < VGA_WIDTH; i++) {
+		float s = sin(i);
+		uint16_t y = 60 + (uint16_t) (10);
+		fill_rect(i, y, 2, 2, COLOR_RED);
+	}*/
+
 	for (size_t i = 0; i < 12; i++) {
 		point_t p1 = {.x=tris[i].p1.x, .y=tris[i].p1.y};
 		point_t p2 = {.x=tris[i].p2.x, .y=tris[i].p2.y};
 		point_t p3 = {.x=tris[i].p3.x, .y=tris[i].p3.y};
 		draw_triangle(p1, p2, p3, COLOR_BLUE);
 	}
+
+
 
 	for(;;){
 

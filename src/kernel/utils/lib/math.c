@@ -8,14 +8,15 @@
 
 
 float pow(float x, uint32_t p) {
-	for (size_t i = 0; i < p; i++) {
-		x*=x;
+	float res = x;
+	for (size_t i = 0; i < p-1; i++) {
+		res *= x;
 	}
-	return x;
+	return res;
 }
 
 float mod(float a, float b) {
-	double mod= (a < 0) ? -a : a;
+	double mod = (a < 0) ? -a : a;
 	if (b < 0) b = -b;
 	// finding mod by repeated subtraction
 	while (mod >= b) mod -= b;
@@ -34,8 +35,8 @@ float mod(float a, float b) {
  * between __taylor_sin(x) and sin(x)
  **/
 
-static inline __attribute__((always_inline)) float __taylor_sin(float x){
-	return (1.00003 * x) - (0.000312267 * pow(x, 2)) -
+float __taylor_sin(float x){
+	return (1.00003 * x) - (0.000312267 * x*x) -
 		(0.165537 * pow(x, 3)) - (0.00203937 * pow(x, 4)) +
 			(0.010286 * pow(x, 5)) - (0.000961693 * pow(x, 6));
 }

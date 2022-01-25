@@ -11,6 +11,10 @@
 
 #define abs(v) (((v) < (0)) ? -(v) : (v))
 
+float pow(float x, uint32_t p);
 
+float mod(float a, float b);
+
+float sin(float x);
 
 #endif /* MATH_H */

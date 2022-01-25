@@ -9,6 +9,7 @@
 #include "../../graphics/graphics.h"
 #include "../../utils/include/string.h"
 
+
 void print_letter(uint8_t scancode) {
 	switch (scancode) {
 		case 0x0:
@@ -192,8 +193,6 @@ void print_letter(uint8_t scancode) {
 			 * maybe a control/escape sequence */
 			if (scancode <= 0x7f) {
 				set_last_key("Unkno kd");
-				char s[3];
-				int_to_string(scancode, s);
 			} else if (scancode <= 0x39 + 0x80) {
 				set_last_key("key up");
 				print_letter(scancode - 0x80);
@@ -205,8 +204,6 @@ void print_letter(uint8_t scancode) {
 static void keyboard_callback(registers_t *regs) {
 	uint8_t scancode = in_portb(0x60);
 	print_letter(scancode);
-	char s[3];
-	int_to_string(scancode, s);
 }
 
 void init_keyboard() {
