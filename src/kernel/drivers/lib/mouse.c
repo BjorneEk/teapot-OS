@@ -65,12 +65,12 @@ void mouse_callback(registers_t *regs) {
 			update_mouse_pos(_dx, -in_portb(0x60));
 			mouse_cycle=0;
 			if(last_evt.right_btn) {
-				display_mouse("mouse: ", "right_btn");
+				display_mouse("mouse: ", "right-btn");
 			} else if(last_evt.left_btn) {
-				display_mouse("mouse: ", "left_btn");
+				display_mouse("mouse: ", "left-btn");
 			}else if(last_evt.middle_btn) {
-				display_mouse("mouse: ", "left_btn");
-			} else display_mouse("mouse: ", "");
+				display_mouse("mouse: ", "middle-btn");
+			} else display_mouse("mouse: ", "no-btn");
 
 			refresh_cursor(__mouse_x, __mouse_y);
 			break;
