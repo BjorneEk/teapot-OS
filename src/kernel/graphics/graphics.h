@@ -14,8 +14,8 @@
 #define STATUS_BAR_MESSAGE_WIDTH (VGA_WIDTH - (STATUS_BAR_KEY_WIDTH + STATUS_BAR_OS_NAME_WIDTH + 4))
 
 typedef struct point {
-	int16_t x;
-	int16_t y;
+	int32_t x;
+	int32_t y;
 } point_t;
 
 #define draw_line(x1, y1, x2, y2, c) memset_line(((VGA_MEM+x1)+(VGA_WIDTH * y1)), x2 - x1, y2 - y1, c)

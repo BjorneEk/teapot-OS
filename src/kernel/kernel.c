@@ -29,18 +29,18 @@ typedef struct triangle {
 } triangle_t;
 
 triangle_t tris[] = {
-	{.p1={10, 10, 10}, .p2={10, 80, 10}, .p3={80, 10, 10}},
-	{.p1={10, 80, 10}, .p2={80, 80, 10}, .p3={80, 10, 10}},
-	{.p1={80, 10, 10}, .p2={80, 80, 10}, .p3={80, 10, 80}},
-	{.p1={80, 80, 10}, .p2={80, 80, 80}, .p3={80, 10, 80}},
-	{.p1={80, 10, 80}, .p2={80, 80, 80}, .p3={10, 10, 80}},
-	{.p1={80, 80, 80}, .p2={10, 80, 80}, .p3={10, 10, 80}},
-	{.p1={10, 10, 80}, .p2={10, 80, 80}, .p3={10, 10, 10}},
-	{.p1={10, 80, 80}, .p2={10, 80, 10}, .p3={10, 10, 10}},
-	{.p1={10, 80, 10}, .p2={10, 80, 80}, .p3={80, 80, 80}},
-	{.p1={80, 80, 80}, .p2={80, 80, 10}, .p3={10, 80, 10}},
-	{.p1={10, 10, 80}, .p2={10, 10, 10}, .p3={80, 10, 10}},
-	{.p1={80, 10, 10}, .p2={80, 10, 80}, .p3={10, 10, 80}},
+	{.p1={30,  30,  30}, .p2={ 30, 120,  30}, .p3={120,  30,  30}},
+	{.p1={ 30, 120,  30}, .p2={120, 120,  30}, .p3={120,  30,  30}},
+	{.p1={120,  30,  30}, .p2={120, 120,  30}, .p3={120,  30, 120}},
+	{.p1={120, 120,  30}, .p2={120, 120, 120}, .p3={120,  30, 120}},
+	{.p1={120,  30, 120}, .p2={120, 120, 120}, .p3={ 30,  30, 120}},
+	{.p1={120, 120, 120}, .p2={ 30, 120, 120}, .p3={ 30,  30, 120}},
+	{.p1={ 30,  30, 120}, .p2={ 30, 120, 120}, .p3={ 30,  30,  30}},
+	{.p1={ 30, 120, 120}, .p2={ 30, 120,  30}, .p3={ 30,  30,  30}},
+	{.p1={ 30, 120,  30}, .p2={ 30, 120, 120}, .p3={120, 120, 120}},
+	{.p1={120, 120, 120}, .p2={120, 120,  30}, .p3={ 30, 120,  30}},
+	{.p1={ 30,  30, 120}, .p2={ 30,  30,  30}, .p3={120,  30,  30}},
+	{.p1={120,  30,  30}, .p2={120,  30, 120}, .p3={ 30,  30, 120}},
 };
 
 void delay(uint32_t t) {
@@ -53,7 +53,7 @@ void main() {
 	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_PINK);
 	draw_string((VGA_WIDTH / 2) - 7, 60, "    welcome to\n    teapot-os\n\n by gustaf franzen", COLOR_BLACK);
 	isr_install();
-	draw_string((VGA_WIDTH / 2) - 30, 77, "Installing interrupt service routines (ISRs).", COLOR_BLACK);
+	draw_string((VGA_WIDTH / 2) -  30, 77, "Installing interrupt service routines (ISRs).", COLOR_BLACK);
 	__asm__ __volatile__("sti");
 	draw_string((VGA_WIDTH / 2) - 15, 83, "Enabeling interrupts", COLOR_BLACK);
 	init_keyboard();
@@ -67,9 +67,21 @@ void main() {
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
 	init_mouse();
+
+
+	for (size_t i = 0; i < 12; i++) {
+		point_t p1 = {.x=tris[i].p1.x, .y=tris[i].p1.y};
+		point_t p2 = {.x=tris[i].p2.x, .y=tris[i].p2.y};
+		point_t p3 = {.x=tris[i].p3.x, .y=tris[i].p3.y};
+		draw_triangle(p1, p2, p3, COLOR_BLUE);
+	}
+
 	for(;;){
+
+
+		/*
 		for (size_t o = 0; o < 20; o++) {
-			fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BACKGROUND);
+			//fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BACKGROUND);
 			for (size_t i = 0; i < 16; i++) {
 				draw_line(((i * 20) + o),     STATUS_BAR_HEIGHT, ((i * 20) + o), VGA_HEIGHT, COLOR_BLUE.c);
 				draw_line(((i * 20) + (o+1)), STATUS_BAR_HEIGHT, ((i * 20) + (o+1)), VGA_HEIGHT, COLOR_BLUE.c);
@@ -87,7 +99,7 @@ void main() {
 				draw_line(0, (STATUS_BAR_HEIGHT + ((i * 20) + (o+5))), VGA_WIDTH, (STATUS_BAR_HEIGHT + ((i * 20) + (o+5))), COLOR_PURPLE.c);
 			}
 			delay(0xFFFFFF);
-		}
+		}*/
 	}
 
 	/*for (size_t i = 0; i < 12; i++) {
