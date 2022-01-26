@@ -5,7 +5,7 @@
 #endif
 #include "../include/vga.h"
 #include "../include/ports.h"
-#include "../../utils/include/math.h"
+#include "../../libc/include/math.h"
 #include "../../graphics/font.h"
 #include "../../graphics/cursor.h"
 #include "../../graphics/color.h"

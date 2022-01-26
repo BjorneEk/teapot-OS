@@ -8,7 +8,7 @@
 #include "../../cpu/isr.h"
 #include "../../graphics/graphics.h"
 #include "../../graphics/cursor.h"
-#include "../../utils/include/string.h"
+#include "../../libc/include/string.h"
 
 #define WAIT_FOR_READ_OK 0
 #define WAIT_FOR_WRITE_OK 1

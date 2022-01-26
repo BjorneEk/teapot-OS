@@ -7,7 +7,7 @@
 ///                   Interrupt description table                        ///
 ////////////////////////////////////////////////////////////////////////////
 
-#include "../utils/include/int.h"
+#include "../libc/include/int.h"
 /// Segment selectors
 #define KERNEL_CS 0x08
 

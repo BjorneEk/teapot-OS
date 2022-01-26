@@ -5,7 +5,7 @@
 ///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
 ////////////////////////////////////////////////////////////////////////////
 
-#include "../utils/include/int.h"
+#include "../libc/include/int.h"
 #include "color.h"
 
 #define CURSOR_IMG_HEIGHT 7

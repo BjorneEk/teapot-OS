@@ -1,7 +1,7 @@
 #ifndef VGA_H
 #define VGA_H
 
-#include "../../utils/include/int.h"
+#include "../../libc/include/int.h"
 
 
 ////////////////////////////////////////////////////////////////////////////

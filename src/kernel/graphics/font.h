@@ -1,7 +1,7 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include "../utils/include/int.h"
+#include "../libc/include/int.h"
 
 #define ALPH_START 0x41
 #define ALPH_END   0x5A

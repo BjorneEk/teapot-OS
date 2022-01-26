@@ -5,7 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "graphics.h"
-#include "../utils/include/string.h"
+#include "../libc/include/string.h"
 
 color_t DRAW_COLOR = (color_t){.r=0b111, .g=0b111, .b=0b11};
 

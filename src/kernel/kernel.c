@@ -8,8 +8,8 @@
 #include "graphics/graphics.h"
 #include "drivers/include/keyboard.h"
 #include "drivers/include/mouse.h"
-#include "utils/include/math.h"
-#include "utils/include/string.h"
+#include "libc/include/math.h"
+#include "libc/include/string.h"
 
 #include "cpu/idt.h"
 #include "cpu/isr.h"
@@ -70,13 +70,6 @@ void main() {
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
 	init_mouse();
-
-
-
-	float s = sin(PI);
-	char rs[10];
-	ftoa(s, rs, 5);
-	draw_string((VGA_WIDTH / 2), 70, rs, COLOR_BLACK);
 
 	/*
 	for (size_t i = 0; i < VGA_WIDTH; i++) {

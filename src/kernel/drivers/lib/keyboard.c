@@ -7,7 +7,7 @@
 #include "../include/ports.h"
 #include "../../cpu/isr.h"
 #include "../../graphics/graphics.h"
-#include "../../utils/include/string.h"
+#include "../../libc/include/string.h"
 
 
 void print_letter(uint8_t scancode) {

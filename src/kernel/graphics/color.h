@@ -5,7 +5,7 @@
 ///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
 ////////////////////////////////////////////////////////////////////////////
 
-#include "../utils/include/int.h"
+#include "../libc/include/int.h"
 
 typedef struct color {
 	union{
