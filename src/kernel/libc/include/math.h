@@ -17,4 +17,6 @@ float mod(float a, float b);
 
 float sin(float x);
 
+float cos(float x);
+
 #endif /* MATH_H */

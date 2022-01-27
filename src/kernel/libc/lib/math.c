@@ -48,3 +48,6 @@ float sin(float x){
 	_x = mod(_x, PI);
 	return (sign) ? -__taylor_sin(_x) : __taylor_sin(_x);
 }
+float cos(float x) {
+	return sin(((PI/2.0f) - x));
+}
