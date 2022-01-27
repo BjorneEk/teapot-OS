@@ -13,9 +13,9 @@ VM = qemu-system-i386
 C_FLAGS = -g -m32 -ffreestanding -c
 LNKR_FLAGS = -m elf_i386
 
-HEADERS = $(wildcard src/kernel/drivers/include/*.h src/kernel/libc/include/*.h src/kernel/graphics/*.h src/kernel/cpu/*.h)
+HEADERS = $(wildcard src/kernel/drivers/include/*.h src/kernel/libc/include/*.h src/kernel/graphics/*.h src/kernel/cpu/*.h src/kernel/lin-alg/*.h)
 BOOT_SOURCES = $(wildcard src/bootloader/*.S)
-C_SOURCES = $(wildcard src/kernel/*.c src/kernel/drivers/lib/*.c src/kernel/libc/lib/*.c src/kernel/graphics/*.c src/kernel/cpu/*.c)
+C_SOURCES = $(wildcard src/kernel/*.c src/kernel/drivers/lib/*.c src/kernel/libc/lib/*.c src/kernel/graphics/*.c src/kernel/cpu/*.c src/kernel/lin-alg/*.c)
 OBJ = ${C_SOURCES:.c=.o src/kernel/cpu/interrupt.o}
 
 # First rule is the one executed when no parameters are fed to the Makefile
@@ -56,6 +56,7 @@ clean:
 	$(RM) src/kernel/libc/lib/*.o src/kernel/libc/lib/*.swp
 	$(RM) src/kernel/graphics/*.o src/kernel/graphics/*.swp
 	$(RM) src/kernel/cpu/*.o src/kernel/cpu/*.swp
+	$(RM) src/kernel/lin-alg/*.o src/kernel/lin-alg/*.swp
 
 cst: #clean but save target
 	$(RM) *.o *.dis .*.swp
@@ -65,3 +66,4 @@ cst: #clean but save target
 	$(RM) src/kernel/libc/lib/*.o src/kernel/libc/lib/*.swp
 	$(RM) src/kernel/graphics/*.o src/kernel/graphics/*.swp
 	$(RM) src/kernel/cpu/*.o src/kernel/cpu/*.swp
+	$(RM) src/kernel/lin-alg/*.o src/kernel/lin-alg/*.swp
