@@ -7,6 +7,19 @@
 #include "../include/math.h"
 
 
+
+
+
+
+int32_t floor(float x) {
+	return (x < 0) ? -(int32_t)((uint32_t)(abs(x))) : (int32_t)(uint32_t)(abs(x));
+}
+
+int32_t ceil(float x){
+	return (x < 0) ? floor(x-1) : floor(x+1);
+}
+
+
 float pow(float x, uint32_t p) {
 	float res = x;
 	for (size_t i = 0; i < p-1; i++) {
@@ -48,6 +61,28 @@ float sin(float x){
 	_x = mod(_x, PI);
 	return (sign) ? -__taylor_sin(_x) : __taylor_sin(_x);
 }
+
+/**
+ * cheat cos function implemented since sin(90 - v) = cos(v);
+ */
 float cos(float x) {
 	return sin(((PI/2.0f) - x));
+}
+
+/**
+ * cheat tan function implemented since tan(v) = sin(v)/cos(v);
+ */
+float tan(float x) {
+	return sin(x) / cos(x);
+}
+
+
+float sqrt(float x) {
+	float a = 1.0f;
+	float b = x;
+	for (uint8_t i = 10; i; --i) {
+		a = (a + b) / 2.0f;
+		b = x / a;
+	}
+	return a;
 }
