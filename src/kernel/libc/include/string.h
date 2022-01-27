@@ -7,7 +7,7 @@
 
 #include "int.h"
 
-#define FLOAT_PRINT_ACCURACY 2
+#define FLOAT_PRINT_ACCURACY 4
 
 /**
  *   @breif calculates the length of a string;

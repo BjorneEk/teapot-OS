@@ -31,6 +31,11 @@ uint32_t nbr_of_digits(uint32_t n) {
 }
 
 int32_t itoa(int32_t x, char str[]) {
+	if (x == 0) {
+		str[0] = '0';
+		str[1] = '\0';
+		return 1;
+	}
 	int32_t i;
 	for (i = 0; x != 0; x /=10) str[i++] = (x % 10) + '0';
 	str[i] = '\0';
@@ -61,6 +66,7 @@ void ftoa(float n, char str[]) {
 	 *   and store its length, and ad the decimal point;
 	 **/
 	int32_t i = itoa(i_part, str);
+
 	str[i] = '.';
 	i++;
 
