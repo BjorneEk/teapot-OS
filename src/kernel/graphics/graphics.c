@@ -18,12 +18,6 @@ color_t get_color(uint16_t x, uint16_t y) {
 	return (color_t) { .c = get_pixel(x, y)};
 }
 
-void draw_triangle(point_t p1, point_t p2, point_t p3, color_t clr) {
-	draw_line(p1.x, p1.y, p2.x, p2.y, clr.c);
-	draw_line(p1.x, p1.y, p3.x, p3.y, clr.c);
-	draw_line(p3.x, p3.y, p2.x, p2.y, clr.c);
-}
-
 void fill_rect(int32_t x, int32_t y, int32_t w, int32_t h, color_t clr) {
 	memset_rect(((VGA_MEM+x)+(VGA_WIDTH * y)), w, h, clr.c);
 }
@@ -33,13 +27,16 @@ void draw_char(int32_t x, int32_t y, char c, color_t clr) {
 }
 
 uint8_t * draw_string(int32_t x, int32_t y, char * str, color_t clr) {
+	uint8_t line = 0;
 	uint8_t * v_ram = memset_5x7font(((VGA_MEM+x)+(VGA_WIDTH * y)), get_idx_from_char(*str), clr.c);
 	//uint8_t * v_ram = memset_image(((VGA_MEM+x)+(VGA_WIDTH * y)), (uint8_t **)FONT5X7[get_char_idx(*str)], FONT_WIDTH, FONT_HEIGHT, clr.c);
 	str++;
 	while(*str) {
 		if (*str == ' ') v_ram = v_ram + FONT_WIDTH;
-		else if (*str == '\n') v_ram = ((VGA_MEM + x) + (VGA_WIDTH * (y + FONT_HEIGHT + 1)));
-		else {
+		else if (*str == '\n'){
+			v_ram = ((VGA_MEM + x) + (VGA_WIDTH * (y + FONT_HEIGHT + 1))) + (line * VGA_WIDTH * (FONT_HEIGHT+2));
+			line++;
+		} else {
 			uint16_t idx = get_idx_from_char(*(uint8_t*)str);
 			if (idx != INVALID_IDX) v_ram = memset_5x7font(v_ram, idx, clr.c);
 			//if (idx != INVALID_IDX) v_ram = memset_image(v_ram, (uint8_t **)FONT5X7[idx], FONT_WIDTH, FONT_HEIGHT, clr.c);

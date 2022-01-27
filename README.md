@@ -3,7 +3,10 @@
 
 ![Application preview](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-1.png)
 
-![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-2.png)(sine wave animation)
+![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-2.png)
+<br/>(sine wave animation)
+![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-3.png)
+<br/>(first 3d renderer, with mouse controll)
 
 
 ## Current progress
@@ -21,8 +24,8 @@
 - [x] **GUI [temporary]** <span style="color:rgb(205, 120,62)">use available functions display keyboard and mouse input info</span>
 - [ ] **Memory allocator** <span style="color:rgb(205, 120,62)">create a memory allocator</span>
 - [ ] **Clean up VGA driver** <span style="color:rgb(205, 120,62)"> differentiate more between VGA driver and graphics lib</span>
-- [ ] **Linear algebra** <span style="color:rgb(205, 120,62)"> port library from [this project](https://github.com/BjorneEk/3d-graphics) in preparation for 3D rendering</span>
-- [ ] **3D-renderer** <span style="color:rgb(205, 120,62)"> implement 3D-renderer </span>
+- [x] **Linear algebra** <span style="color:rgb(205, 120,62)"> port library from [this project](https://github.com/BjorneEk/3d-graphics) in preparation for 3D rendering</span>
+- [x] **3D-renderer** <span style="color:rgb(205, 120,62)"> implement 3D-renderer </span>
 - [ ] **teapot time** <span style="color:rgb(205, 120,62)"> render a utah teapot referencing [this project](https://github.com/BjorneEk/3d-graphics) </span>
 - [ ] **Run on hardware** <span style="color:rgb(205, 120,62)"> run teapot os natively on real hardware (potentialy 2013 MacBook Air) </span>
 - [ ] **Create documentation** <span style="color:rgb(205, 120,62)"> document the code and project</span>

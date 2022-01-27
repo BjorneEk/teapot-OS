@@ -12,40 +12,12 @@
 #include "libc/include/string.h"
 #include "libc/include/malloc.h"
 
+#include "lin-alg/triangle.h"
+
 #include "cpu/idt.h"
 #include "cpu/isr.h"
 
-typedef struct vec3d {
-	int32_t x;
-	int32_t y;
-	int32_t z;
-} vec3d_t;
 
-typedef struct triangle {
-	union {
-		struct {
-			vec3d_t p1;
-			vec3d_t p2;
-			vec3d_t p3;
-		};
-		vec3d_t p[3];
-	};
-} triangle_t;
-
-triangle_t tris[] = {
-	{.p1={30,  30,  30}, .p2={ 30, 120,  30}, .p3={120,  30,  30}},
-	{.p1={ 30, 120,  30}, .p2={120, 120,  30}, .p3={120,  30,  30}},
-	{.p1={120,  30,  30}, .p2={120, 120,  30}, .p3={120,  30, 120}},
-	{.p1={120, 120,  30}, .p2={120, 120, 120}, .p3={120,  30, 120}},
-	{.p1={120,  30, 120}, .p2={120, 120, 120}, .p3={ 30,  30, 120}},
-	{.p1={120, 120, 120}, .p2={ 30, 120, 120}, .p3={ 30,  30, 120}},
-	{.p1={ 30,  30, 120}, .p2={ 30, 120, 120}, .p3={ 30,  30,  30}},
-	{.p1={ 30, 120, 120}, .p2={ 30, 120,  30}, .p3={ 30,  30,  30}},
-	{.p1={ 30, 120,  30}, .p2={ 30, 120, 120}, .p3={120, 120, 120}},
-	{.p1={120, 120, 120}, .p2={120, 120,  30}, .p3={ 30, 120,  30}},
-	{.p1={ 30,  30, 120}, .p2={ 30,  30,  30}, .p3={120,  30,  30}},
-	{.p1={120,  30,  30}, .p2={120,  30, 120}, .p3={ 30,  30, 120}},
-};
 
 void delay(uint32_t t) {
 	for (size_t i = 0; i < t; i++) {
@@ -65,37 +37,24 @@ void main() {
 	init_mouse();
 	vga_init_cursor();
 	//draw_string((VGA_WIDTH / 2) - 15, 83, "initializing keyboard drivers", COLOR_BLACK);
-	delay(0x5FFFFFFF);
 
 
 	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
 
-
-	draw_string(70, 20,"cos(x)", COLOR_PURPLE);
-	draw_string(115, 20,"sin(x)", COLOR_YELLOW);
-	for (float x = 0; x < VGA_WIDTH; x++) {
-		float y;
-		y = 60.0f + (sin(x/30) * 30);
-			fill_rect((uint32_t)x, (uint32_t)y, 1, 1, COLOR_YELLOW);
-
-		y = 60.0f + (cos(x/30) * 30);
-			fill_rect((uint32_t)x, (uint32_t)y, 1, 1, COLOR_PURPLE);
-
-	}
 	/*
 	for(;;){
 		for (float x = 0; x < VGA_WIDTH + 70; x++) {
 			for (size_t y_off = 0; y_off < 34; y_off++) {
 				float y;
 				if(x < VGA_WIDTH) {
-					y = 30.0f + (sin(x/30) * 30);
+					y =2.0f + (sin(x/30) * 30);
 					if((uint32_t)y + (y_off*5) > STATUS_BAR_HEIGHT)
 						fill_rect((uint32_t)x, (uint32_t)y + (y_off*5), 1, 1, from_radian(x/2));
 				}
 				if (x >= 70) {
-					y = 30.0f + (sin((x-70)/30) * 30);
+					y =2.0f + (sin((x-70)/30) * 30);
 					if((uint32_t)y + (y_off*5) > STATUS_BAR_HEIGHT)
 						fill_rect((uint32_t)(x-70), (uint32_t)y + (y_off*5), 1, 1, COLOR_BLACK);
 				}

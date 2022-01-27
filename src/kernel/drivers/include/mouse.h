@@ -11,5 +11,8 @@ void init_mouse();
 extern int32_t __mouse_x;
 extern int32_t __mouse_y;
 
+extern float x_angle;
+extern float y_angle;
+
 
 #endif /* MOUSE_H */

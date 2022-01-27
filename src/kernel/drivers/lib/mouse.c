@@ -10,8 +10,27 @@
 #include "../../graphics/cursor.h"
 #include "../../libc/include/string.h"
 
+#include "../../libc/include/math.h"
+
+#include "../../lin-alg/triangle.h"
+
 #define WAIT_FOR_READ_OK 0
 #define WAIT_FOR_WRITE_OK 1
+
+triangle3d_t cube[] = {
+	{.p1={-0.5f, -0.5f, -0.5f,  1.0f}, .p2={-0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
+	{.p1={-0.5f,  0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
+	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f,  0.5f,  1.0f}},
+	{.p1={ 0.5f,  0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f,  0.5f,  1.0f}, .p3={ 0.5f, -0.5f,  0.5f,  1.0f}},
+	{.p1={ 0.5f, -0.5f,  0.5f,  1.0f}, .p2={ 0.5f,  0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
+	{.p1={ 0.5f,  0.5f,  0.5f,  1.0f}, .p2={-0.5f,  0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
+	{.p1={-0.5f, -0.5f,  0.5f,  1.0f}, .p2={-0.5f,  0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f, -0.5f,  1.0f}},
+	{.p1={-0.5f,  0.5f,  0.5f,  1.0f}, .p2={-0.5f,  0.5f, -0.5f,  1.0f}, .p3={-0.5f, -0.5f, -0.5f,  1.0f}},
+	{.p1={-0.5f,  0.5f, -0.5f,  1.0f}, .p2={-0.5f,  0.5f,  0.5f,  1.0f}, .p3={ 0.5f,  0.5f,  0.5f,  1.0f}},
+	{.p1={ 0.5f,  0.5f,  0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={-0.5f,  0.5f, -0.5f,  1.0f}},
+	{.p1={-0.5f, -0.5f,  0.5f,  1.0f}, .p2={-0.5f, -0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
+	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f, -0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
+};
 
 
 
@@ -31,13 +50,70 @@ typedef struct mouse_event {
 	};
 } mouse_evt_t;
 
-
+float NEAR = 0.1f;
+float FAR  = 1000.0f;
+float FOV  = 90.0f;
+float ASPECT_RATIO = 200.0f / 320.0f;
 
 int32_t __mouse_x = 0;
 int32_t __mouse_y = 0;
+
+int32_t prev_mx = 0;
+int32_t prev_my = 0;
 uint8_t mouse_cycle = 0;
 int8_t  _dx = 0;
 mouse_evt_t last_evt;
+
+float x_angle = 0.0;
+float y_angle = 0.0;
+
+uint8_t LEFT_BUTTON = 0;
+uint8_t RIGHT_BUTTON = 0;
+
+
+void repaint(){
+	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BLACK);
+	x_angle += ((float)__mouse_x - (float)prev_mx) / 100.0f;
+	y_angle += ((float)__mouse_y - (float)prev_my) / 100.0f;
+	float cos_x = cos(x_angle);
+	float sin_x = sin(x_angle);
+	float cos_y = cos(y_angle);
+	float sin_y = sin(y_angle);
+	prev_my = __mouse_y;
+	prev_mx = __mouse_x;
+	matrix4x4_t rx = (matrix4x4_t) {
+		.m[0] = {1.0f,  0.0f,   0.0f, 0.0f},
+		.m[1] = {0.0f, cos_y, -sin_y, 0.0f},
+		.m[2] = {0.0f, sin_y,  cos_y, 0.0f},
+		.m[3] = {0.0f,   0.0f,  0.0f, 1.0f}
+	};
+	matrix4x4_t ry = (matrix4x4_t) {
+		.m[0] = { cos_x, 0.0f, sin_x, 0.0f},
+		.m[1] = {  0.0f, 1.0f,  0.0f, 0.0f},
+		.m[2] = {-sin_x, 0.0f, cos_x, 0.0f},
+		.m[3] = {  0.0f, 0.0f,  0.0f, 1.0f}
+	};
+	matrix4x4_t scale_mat = (matrix4x4_t) {
+		.m[0] = {70.0f, 0.0, 0.0f, 0.0f},
+		.m[1] = {0.0,  70.0f, 0.0f, 0.0f},
+		.m[2] = {0.0f, 0.0f, 70.0f, 0.0f},
+		.m[3] = {0.0f, 0.0f, 0.0f, 1.0f}
+	};
+	matrix4x4_t c_mat = mat4x4_mult(rx, ry);
+	c_mat = mat4x4_mult(c_mat, scale_mat);
+	for (size_t i = 0; i < 12; i++) {
+		triangle3d_t transformed = triangle_mult_matrix(cube[i], c_mat);
+		transformed.p1.x += 160;
+		transformed.p2.x += 160;
+		transformed.p3.x += 160;
+		transformed.p1.y += 100;
+		transformed.p2.y += 100;
+		transformed.p3.y += 100;
+
+		tri_set_normal(&transformed);
+		draw_triangle(transformed, COLOR_BLUE);
+	}
+}
 
 void update_mouse_pos(int8_t dx, int8_t dy) {
 	if ((__mouse_x + dx) > VGA_WIDTH) __mouse_x = VGA_WIDTH;
@@ -48,7 +124,14 @@ void update_mouse_pos(int8_t dx, int8_t dy) {
 	else __mouse_y += dy;
 	__mouse_x = __mouse_x;
 	__mouse_y = __mouse_y;
+	if(LEFT_BUTTON) {
+		repaint();
+	} else {
+		prev_my = __mouse_y;
+		prev_mx = __mouse_x;
+	}
 }
+
 
 //Mouse functions
 void mouse_callback(registers_t *regs) {
@@ -66,11 +149,17 @@ void mouse_callback(registers_t *regs) {
 			mouse_cycle=0;
 			if(last_evt.right_btn) {
 				display_mouse("mouse: ", "right-btn");
+				RIGHT_BUTTON = 1;
 			} else if(last_evt.left_btn) {
 				display_mouse("mouse: ", "left-btn");
+				LEFT_BUTTON = 1;
 			}else if(last_evt.middle_btn) {
 				display_mouse("mouse: ", "middle-btn");
-			} else display_mouse("mouse: ", "no-btn");
+			} else {
+				display_mouse("mouse: ", "no-btn");
+				LEFT_BUTTON = 0;
+				RIGHT_BUTTON = 0;
+			}
 
 			refresh_cursor(__mouse_x, __mouse_y);
 			break;

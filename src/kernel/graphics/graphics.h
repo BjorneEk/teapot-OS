@@ -24,8 +24,6 @@ void set_color(color_t color);
 
 color_t get_color(uint16_t x, uint16_t y);
 
-void draw_triangle(point_t p1, point_t p2, point_t p3, color_t clr);
-
 void fill_rect(int32_t x, int32_t y, int32_t w, int32_t h, color_t clr);
 
 void draw_char(int32_t x, int32_t y, char c, color_t clr);
