@@ -10,6 +10,7 @@
 #include "drivers/include/mouse.h"
 #include "libc/include/math.h"
 #include "libc/include/string.h"
+#include "libc/include/malloc.h"
 
 #include "cpu/idt.h"
 #include "cpu/isr.h"
@@ -52,24 +53,24 @@ void delay(uint32_t t) {
 	}
 }
 void main() {
+	//malloc_init();
 	vga_init_palette();
 	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_PINK);
 	draw_string((VGA_WIDTH / 2) - 7, 60, "    welcome to\n    teapot-os\n\n by gustaf franzen", COLOR_BLACK);
 	isr_install();
-	draw_string((VGA_WIDTH / 2) -  30, 77, "Installing interrupt service routines (ISRs).", COLOR_BLACK);
+	//draw_string((VGA_WIDTH / 2) -  30, 77, "Installing interrupt service routines (ISRs).", COLOR_BLACK);
 	__asm__ __volatile__("sti");
-	draw_string((VGA_WIDTH / 2) - 15, 83, "Enabeling interrupts", COLOR_BLACK);
+	//draw_string((VGA_WIDTH / 2) - 15, 83, "Enabeling interrupts", COLOR_BLACK);
 	init_keyboard();
-
+	init_mouse();
 	vga_init_cursor();
-	draw_string((VGA_WIDTH / 2) - 15, 83, "initializing keyboard drivers", COLOR_BLACK);
-	delay(0xFFFFFFF);
+	//draw_string((VGA_WIDTH / 2) - 15, 83, "initializing keyboard drivers", COLOR_BLACK);
+	delay(0x5FFFFFFF);
 
 
 	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BACKGROUND);
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
-	init_mouse();
 
 	/*
 	for (size_t i = 0; i < VGA_WIDTH; i++) {
@@ -77,45 +78,15 @@ void main() {
 		uint16_t y = 60 + (uint16_t) (10);
 		fill_rect(i, y, 2, 2, COLOR_RED);
 	}*/
+	fill_rect(50, 50, 50, 50, COLOR_RED);
 
+	fill_rect(100, 100, 50, 50, COLOR_PURPLE);
+	/*
 	for (size_t i = 0; i < 12; i++) {
 		point_t p1 = {.x=tris[i].p1.x, .y=tris[i].p1.y};
 		point_t p2 = {.x=tris[i].p2.x, .y=tris[i].p2.y};
 		point_t p3 = {.x=tris[i].p3.x, .y=tris[i].p3.y};
 		draw_triangle(p1, p2, p3, COLOR_BLUE);
 	}
-
-
-
-	for(;;){
-
-
-		/*
-		for (size_t o = 0; o < 20; o++) {
-			//fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BACKGROUND);
-			for (size_t i = 0; i < 16; i++) {
-				draw_line(((i * 20) + o),     STATUS_BAR_HEIGHT, ((i * 20) + o), VGA_HEIGHT, COLOR_BLUE.c);
-				draw_line(((i * 20) + (o+1)), STATUS_BAR_HEIGHT, ((i * 20) + (o+1)), VGA_HEIGHT, COLOR_BLUE.c);
-				draw_line(((i * 20) + (o+2)), STATUS_BAR_HEIGHT, ((i * 20) + (o+2)), VGA_HEIGHT, COLOR_RED.c);
-				draw_line(((i * 20) + (o+3)), STATUS_BAR_HEIGHT, ((i * 20) + (o+3)), VGA_HEIGHT, COLOR_RED.c);
-				draw_line(((i * 20) + (o+4)), STATUS_BAR_HEIGHT, ((i * 20) + (o+4)), VGA_HEIGHT, COLOR_GREEN.c);
-				draw_line(((i * 20) + (o+5)), STATUS_BAR_HEIGHT, ((i * 20) + (o+5)), VGA_HEIGHT, COLOR_GREEN.c);
-			}
-			for (size_t i = 0; i < 10; i++) {
-				draw_line(0,   (STATUS_BAR_HEIGHT + ((i * 20) + (o))), VGA_WIDTH,   (STATUS_BAR_HEIGHT + ((i * 20) + (o))), COLOR_WHITE.c);
-				draw_line(0, (STATUS_BAR_HEIGHT + ((i * 20) + (o+1))), VGA_WIDTH, (STATUS_BAR_HEIGHT + ((i * 20) + (o+1))), COLOR_WHITE.c);
-				draw_line(0, (STATUS_BAR_HEIGHT + ((i * 20) + (o+2))), VGA_WIDTH, (STATUS_BAR_HEIGHT + ((i * 20) + (o+2))), COLOR_PINK.c);
-				draw_line(0, (STATUS_BAR_HEIGHT + ((i * 20) + (o+3))), VGA_WIDTH, (STATUS_BAR_HEIGHT + ((i * 20) + (o+3))), COLOR_PINK.c);
-				draw_line(0, (STATUS_BAR_HEIGHT + ((i * 20) + (o+4))), VGA_WIDTH, (STATUS_BAR_HEIGHT + ((i * 20) + (o+4))), COLOR_PURPLE.c);
-				draw_line(0, (STATUS_BAR_HEIGHT + ((i * 20) + (o+5))), VGA_WIDTH, (STATUS_BAR_HEIGHT + ((i * 20) + (o+5))), COLOR_PURPLE.c);
-			}
-			delay(0xFFFFFF);
-		}*/
-	}
-
-	/*for (size_t i = 0; i < 12; i++) {
-		draw_triangle((point_t){.x=(int16_t)tris[i].p1.x, .y=(int16_t)tris[i].p1.y},
-		(point_t){.x=(int16_t)tris[i].p2.x, .y=(int16_t)tris[i].p2.y},
-		(point_t){.x=(int16_t)tris[i].p3.x, .y=(int16_t)tris[i].p3.y}, clr);
-	}*/
+	*/
 }
