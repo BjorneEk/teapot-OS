@@ -1,12 +1,12 @@
 #ifndef VGA_H
 #define VGA_H
 
-#include "../../libc/include/int.h"
-
-
 ////////////////////////////////////////////////////////////////////////////
 ///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
 ////////////////////////////////////////////////////////////////////////////
+
+#include "../../libc/include/int.h"
+
 #define VGA_MEM (uint8_t *) 0xA0000
 
 #define VGA_WIDTH  320
@@ -18,6 +18,30 @@
 #define VGA_PALETTE_DATA  0x3C9
 
 #define vram_at(_x, _y) (uint8_t *) (((VGA_MEM)+(_x))+((VGA_WIDTH) * (_y)))
+
+
+
+/**
+ *  a struct used for drawing images onto the screen;
+ **/
+typedef struct VGA_image {
+
+	uint8_t ** image;  /**
+                       *  pointer to image 2d array
+                       **/
+
+	uint16_t w;   /**
+                  *  width of the image
+                  **/
+
+	uint16_t h;   /**
+                  *  height of the image
+                  **/
+
+	uint8_t transparrent;   /**
+                            *  if true white pixels are not colored;
+                            **/
+} vga_image_t;
 
 void vga_init_palette();
 
@@ -37,6 +61,8 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color);
 /// returns pointer to video ram where potential following characters should be places
 ///
 uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color);
+
+uint8_t * memset_image(uint8_t * v_mem_start,  vga_image_t img);
 
 void vga_init_cursor();
 

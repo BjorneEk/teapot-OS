@@ -1,6 +1,10 @@
 #ifndef FONT_H
 #define FONT_H
 
+////////////////////////////////////////////////////////////////////////////
+///        @author Gustaf Franzén :: https://github.com/BjorneEk;        ///
+////////////////////////////////////////////////////////////////////////////
+
 #include "../libc/include/int.h"
 
 #define ALPH_START 0x41
@@ -32,7 +36,41 @@
 ///	ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ0123456789.,:;!?
 ///
 
+/**
+ *   struct used to pack a font character into a 7
+ *   byte space instead of a 5 * 7 byte space;
+ **/
+typedef struct f_col {
+	union {
+		uint8_t byte_rep;
+		struct {
+			uint8_t p1 : 1;
+			uint8_t p2 : 1;
+			uint8_t p3 : 1;
+			uint8_t p4 : 1;
+			uint8_t p5 : 1;
+			uint8_t p6 : 1;
+			uint8_t p7 : 1;
+			uint8_t zero : 1;
+		};
+	};
+} f_col_t;
+
+/**
+ *   size of this font representation is 5 bytes instead of
+ *   the 35 bytes a byte arrat would have needed
+ **/
+typedef struct font_char{
+	f_col_t f[5];
+} font_char_t;
+
 extern char * font_supported_chars;
 extern const uint8_t FONT5X7[50][7][5];
+
+extern const font_char_t FONT5X7_COMPACT[];
+
+uint16_t get_idx_from_char(uint8_t c);
+
+uint8_t font_at(uint16_t i, uint8_t x, uint8_t y);
 
 #endif /* FONT_H */

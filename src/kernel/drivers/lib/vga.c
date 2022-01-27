@@ -10,6 +10,7 @@
 #include "../../graphics/cursor.h"
 #include "../../graphics/color.h"
 #include "../include/mouse.h"
+#include "../../libc/include/malloc.h"
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -110,7 +111,8 @@ uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
 	size_t x;
 	for (size_t y = 0; y < FONT_HEIGHT; y++) {
 		for (x = 0; x < FONT_WIDTH; x++) {
-			if (FONT5X7[i][y][x])
+			//if (FONT5X7[i][y][x])
+			if (font_at(i, x, y))
 				*(v_ram + x + (y*VGA_WIDTH)) = color;
 		}
 	}
@@ -118,7 +120,18 @@ uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
 	return (uint8_t *)(v_ram + x + 1);
 }
 
-
+uint8_t * memset_image(uint8_t * v_mem_start,  vga_image_t img) {
+	uint8_t * v_ram = v_mem_start;
+	size_t x;
+	for (size_t y = 0; y < img.h; y++) {
+		for (x = 0; x < img.w; x++) {
+			if (img.image[y][x])
+				*(v_ram + x + (y*VGA_WIDTH)) = img.image[y][x];
+			else if (!img.transparrent) *(v_ram + x + (y*VGA_WIDTH)) = img.image[y][x];
+		}
+	}
+	return (uint8_t *)(v_ram + x + 1);
+}
 
 
 void place_cursor(uint8_t * v_mem_start){
