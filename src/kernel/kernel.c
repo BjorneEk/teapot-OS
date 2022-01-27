@@ -68,45 +68,27 @@ void main() {
 	delay(0x5FFFFFFF);
 
 
-	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BACKGROUND);
+	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
 
-	fill_rect(50, 50, 50, 50, COLOR_RED);
+	for(;;){
+		for (float x = 0; x < VGA_WIDTH + 70; x++) {
+			for (size_t y_off = 0; y_off < 34; y_off++) {
+				float y;
+				if(x < VGA_WIDTH) {
+					y = 30.0f + (sin(x/30) * 30);
+					if((uint32_t)y + (y_off*5) > STATUS_BAR_HEIGHT)
+						fill_rect((uint32_t)x, (uint32_t)y + (y_off*5), 1, 1, from_radian(x/2));
+				}
+				if (x >= 70) {
+					y = 30.0f + (sin((x-70)/30) * 30);
+					if((uint32_t)y + (y_off*5) > STATUS_BAR_HEIGHT)
+						fill_rect((uint32_t)(x-70), (uint32_t)y + (y_off*5), 1, 1, COLOR_BLACK);
+				}
+			}
 
-	fill_rect(100, 100, 50, 50, COLOR_PURPLE);
-
-	char tmp[30];
-	int32_t itoa_test = 777;
-	itoa(itoa_test, tmp);
-	draw_string((VGA_WIDTH / 2) - 67, 60, "itoa test: ", COLOR_BLACK);
-	draw_string((VGA_WIDTH / 2) - 7, 60, tmp, COLOR_BLACK);
-	draw_string((VGA_WIDTH / 2) + 13, 60, ", and it has: ", COLOR_BLACK);
-	itoa(nbr_of_digits(itoa_test), tmp);
-	strcat(tmp, " digits.");
-	draw_string((VGA_WIDTH / 2) + 83, 60, tmp, COLOR_BLACK);
-
-	char tmp2[5];
-	float ftoa_test = 77.07f;
-	ftoa(ftoa_test, tmp2);
-	draw_string((VGA_WIDTH / 2) - 67, 69, "ftoa test: ", COLOR_BLACK);
-	draw_string((VGA_WIDTH / 2) - 7, 69, tmp2, COLOR_BLACK);
-
-
-
-	/*
-	for (size_t i = 0; i < VGA_WIDTH; i++) {
-		float s = sin(i);
-		uint16_t y = 60 + (uint16_t) (10);
-		fill_rect(i, y, 2, 2, COLOR_RED);
-	}*/
-
-	/*
-	for (size_t i = 0; i < 12; i++) {
-		point_t p1 = {.x=tris[i].p1.x, .y=tris[i].p1.y};
-		point_t p2 = {.x=tris[i].p2.x, .y=tris[i].p2.y};
-		point_t p3 = {.x=tris[i].p3.x, .y=tris[i].p3.y};
-		draw_triangle(p1, p2, p3, COLOR_BLUE);
+		delay(0x4FFFFF);
+		}
 	}
-	*/
 }

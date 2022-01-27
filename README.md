@@ -1,9 +1,10 @@
 # teapot-OS
 ---
 
-
-
 ![Application preview](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-1.png)
+
+![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-2.png)(sine wave animation)
+
 
 ## Current progress
 - [x] **Bootloader** <span style="color:rgb(205, 120,62)"> enter 32 bit protected mode and run c code</span>
@@ -30,7 +31,7 @@
 	- [x] **Fixed width ints** <span style="color:rgb(205, 120,62)"> *for neater code* </span>
 	- [x] **Graphics library** <span style="color:rgb(205, 120,62)"> </span>
 	- [x] **String utils** <span style="color:rgb(205, 120,62)"> converting and concating </span>
-	- [ ] **Math** <span style="color:rgb(205, 120,62)"> math functions especialy trigonometry functions like sin(x)</span>
+	- [x] **Math** <span style="color:rgb(205, 120,62)"> math functions especialy trigonometry functions like sin(x)</span>
 
 
 
