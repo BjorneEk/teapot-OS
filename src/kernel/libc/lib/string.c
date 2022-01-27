@@ -53,19 +53,34 @@ void ftoa(float n, char str[]) {
 	/**
 	 *   take the part before che decimal point;
 	 **/
-	uint32_t i_part = (uint32_t)(n);
+	uint32_t i_part = (uint32_t)(abs(n));
 
 	/**
 	 *   take remaining float part;
 	 **/
 	float f_i_part = __slow_safe_int_to_float(i_part);
-	float f_part = (n - f_i_part);
+	float f_part = (abs(n) - f_i_part);
 
 	/**
 	 *   add the int part as a string to the result
 	 *   and store its length, and ad the decimal point;
 	 **/
-	int32_t i = itoa(i_part, str);
+	int32_t i = 0;
+	if (abs(n) < 1 && n < 0) {
+		str[0] = '-';
+		str[1] = '0';
+		str[2] = '\n';
+		i = 2;
+	} else if (n < 0) {
+		str[0] = '-';
+		str[1] = '\n';
+		i = 1;
+	} else if (abs(n) < 1) {
+		str[0] = '0';
+		str[1] = '\n';
+		i = 1;
+	}
+	i = itoa(i_part, str + i);
 
 	str[i] = '.';
 	i++;
@@ -89,7 +104,7 @@ void ftoa(float n, char str[]) {
 }
 
 
-char * strcat(char * s1, const char *s2) {
+char * strcat(char * s1, char *s2) {
 	/**
 	 *   copy char s2[] to end of s1[]
 	 **/

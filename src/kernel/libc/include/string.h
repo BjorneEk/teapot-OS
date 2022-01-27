@@ -43,6 +43,6 @@ void ftoa(float n, char str[]);
 /**
  *   @breif appends s2 to s1
  **/
-char * strcat(char * s1, const char *s2);
+char * strcat(char * s1, char *s2);
 
 #endif /* STRING_H */
