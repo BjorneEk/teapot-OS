@@ -39,12 +39,25 @@ typedef struct mem_block {
 
 #define BLOCK_DESCRIPTOR_SIZE sizeof(mem_block_t) // 16
 
+
+/**
+ *   @breif function that initializes dynammicaly allocated memory
+ *
+ *   sets the first element of the doubly linked list used to manage
+ *   the dynamic memory in order to initialize the list.
+ **/
 void malloc_init();
 
+/**
+ *   @breif function that frees dynammicaly allocated memory
+ *
+ *   also tries to merge freed blocks with adjacent free memory blocks;
+ **/
 void free(void * mem);
 
 /**
  *   @breif malloc function implemented using doubly linked list;
+ *
  *   @see docs/ for examples;
  **/
 void * malloc(size_t size);
