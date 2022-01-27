@@ -59,7 +59,7 @@ void ftoa(float n, char * res, int32_t afterpoint) {
 		*  of points after dot. The third parameter
 		*  is needed to handle cases like 233.007
 		**/
-		fpart = fpart * pow(10, afterpoint);
+		fpart = fpart * 100;
 
 		int_to_str((int)fpart, res + i + 1, afterpoint);
 	}
