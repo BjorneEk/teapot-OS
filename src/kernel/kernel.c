@@ -72,6 +72,19 @@ void main() {
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
 
+
+	draw_string(70, 20,"cos(x)", COLOR_PURPLE);
+	draw_string(115, 20,"sin(x)", COLOR_YELLOW);
+	for (float x = 0; x < VGA_WIDTH; x++) {
+		float y;
+		y = 60.0f + (sin(x/30) * 30);
+			fill_rect((uint32_t)x, (uint32_t)y, 1, 1, COLOR_YELLOW);
+
+		y = 60.0f + (cos(x/30) * 30);
+			fill_rect((uint32_t)x, (uint32_t)y, 1, 1, COLOR_PURPLE);
+
+	}
+	/*
 	for(;;){
 		for (float x = 0; x < VGA_WIDTH + 70; x++) {
 			for (size_t y_off = 0; y_off < 34; y_off++) {
@@ -91,4 +104,5 @@ void main() {
 		delay(0x4FFFFF);
 		}
 	}
+	*/
 }
