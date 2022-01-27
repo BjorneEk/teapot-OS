@@ -72,15 +72,35 @@ void main() {
 	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
 	set_os_name("teapot-os");
 
+	fill_rect(50, 50, 50, 50, COLOR_RED);
+
+	fill_rect(100, 100, 50, 50, COLOR_PURPLE);
+
+	char tmp[30];
+	int32_t itoa_test = 777;
+	itoa(itoa_test, tmp);
+	draw_string((VGA_WIDTH / 2) - 67, 60, "itoa test: ", COLOR_BLACK);
+	draw_string((VGA_WIDTH / 2) - 7, 60, tmp, COLOR_BLACK);
+	draw_string((VGA_WIDTH / 2) + 13, 60, ", and it has: ", COLOR_BLACK);
+	itoa(nbr_of_digits(itoa_test), tmp);
+	strcat(tmp, " digits.");
+	draw_string((VGA_WIDTH / 2) + 83, 60, tmp, COLOR_BLACK);
+
+	char tmp2[5];
+	float ftoa_test = 77.07f;
+	ftoa(ftoa_test, tmp2);
+	draw_string((VGA_WIDTH / 2) - 67, 69, "ftoa test: ", COLOR_BLACK);
+	draw_string((VGA_WIDTH / 2) - 7, 69, tmp2, COLOR_BLACK);
+
+
+
 	/*
 	for (size_t i = 0; i < VGA_WIDTH; i++) {
 		float s = sin(i);
 		uint16_t y = 60 + (uint16_t) (10);
 		fill_rect(i, y, 2, 2, COLOR_RED);
 	}*/
-	fill_rect(50, 50, 50, 50, COLOR_RED);
 
-	fill_rect(100, 100, 50, 50, COLOR_PURPLE);
 	/*
 	for (size_t i = 0; i < 12; i++) {
 		point_t p1 = {.x=tris[i].p1.x, .y=tris[i].p1.y};

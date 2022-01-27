@@ -24,43 +24,78 @@ void reverse(char s[]) {
 	}
 }
 
-int32_t int_to_str(int32_t x, char str[], int32_t d) {
-	int32_t i = 0;
-	while (x) {
-		str[i++] = (x % 10) + '0';
-		x = x / 10;
-	}
+uint32_t nbr_of_digits(uint32_t n) {
+	uint32_t count = 0;
+	for (; n != 0; n /=10) ++count;
+	return count;
+}
 
-	// If number of digits required is more, then
-	// add 0s at the beginning
-	while (i < d)
-		str[i++] = '0';
-
-		reverse(str);
+int32_t itoa(int32_t x, char str[]) {
+	int32_t i;
+	for (i = 0; x != 0; x /=10) str[i++] = (x % 10) + '0';
 	str[i] = '\0';
+	reverse(str);
 	return i;
 }
 
-void ftoa(float n, char * res, int32_t afterpoint) {
-	// Extract integer part
-	int32_t ipart = (int32_t)n;
+static float __slow_safe_int_to_float(uint32_t i) {
+	float res = 0;
+	for (; i > 0; i--) res += 1.0;
+	return res;
+}
 
-	// Extract floating part
-	int32_t fpart = n - (float)ipart;
+void ftoa(float n, char str[]) {
+	/**
+	 *   take the part before che decimal point;
+	 **/
+	uint32_t i_part = (uint32_t)(n);
 
-	// convert integer part to string
-	int32_t i = int_to_str(ipart, res, 0);
+	/**
+	 *   take remaining float part;
+	 **/
+	float f_i_part = __slow_safe_int_to_float(i_part);
+	float f_part = (n - f_i_part);
 
-	// check for display option after point
-	if (afterpoint != 0) {
-		res[i] = '.'; // add dot
-		/**
-		*  Get the value of fraction part upto given no.
-		*  of points after dot. The third parameter
-		*  is needed to handle cases like 233.007
-		**/
-		fpart = fpart * 100;
+	/**
+	 *   add the int part as a string to the result
+	 *   and store its length, and ad the decimal point;
+	 **/
+	int32_t i = itoa(i_part, str);
+	str[i] = '.';
+	i++;
 
-		int_to_str((int)fpart, res + i + 1, afterpoint);
+	/**
+	 *   shift up the decimal part a step at the time
+	 *   in order to catch cases like  1.03;
+	 **/
+	for (uint8_t j = 0; j < FLOAT_PRINT_ACCURACY; j++) {
+		f_part *= 10;
+		if((uint32_t)f_part == 0) {
+			str[i] = '0';
+			i++;
+		}
 	}
+
+	/**
+	 * if the float part was not 0 append it to the string
+	 **/
+	if ((uint32_t)f_part != 0) itoa((uint32_t)f_part, str + i);
+}
+
+
+char * strcat(char * s1, const char *s2) {
+	/**
+	 *   copy char s2[] to end of s1[]
+	 **/
+	char *s;
+	/**
+	 *   go to end of s1
+	 **/
+	for (s = s1; *s != '\0'; ++s);
+	/**
+	 *   copy over s2
+	 **/
+	for (; (*s = *s2) != '\0'; ++s, ++s2);
+
+	return s1;
 }
