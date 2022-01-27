@@ -33,4 +33,6 @@ typedef struct color {
 #define COLOR_STATBAR (color_t){.r=0b100, .g=0b100, .b=0b10}
 #define COLOR_BACKGROUND (color_t){.r=0b000, .g=0b100, .b=0b01}
 
+color_t from_radian(float r);
+
 #endif /* GRAPHICS_H */
