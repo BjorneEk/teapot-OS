@@ -80,7 +80,7 @@ float tan(float x) {
 float sqrt(float x) {
 	float a = 1.0f;
 	float b = x;
-	for (uint8_t i = 10; i; --i) {
+	for (uint8_t i = 100; i; --i) {
 		a = (a + b) / 2.0f;
 		b = x / a;
 	}

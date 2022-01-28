@@ -35,6 +35,8 @@ uint8_t equals_tri(triangle3d_t t1, triangle3d_t t2);
 
 void tri_set_normal(triangle3d_t * tri);
 
+vec3d_t tri_get_normal(triangle3d_t tri);
+
 triangle3d_t triangle_mult_matrix(triangle3d_t tri, matrix4x4_t m);
 
 triangle3d_t rotate_tri(triangle3d_t tri, float x, float y, float z);

@@ -70,17 +70,50 @@ float y_angle = 0.0;
 uint8_t LEFT_BUTTON = 0;
 uint8_t RIGHT_BUTTON = 0;
 
+vec3d_t camera = (vec3d_t){
+	.x = 160.0f,
+	.y = 100.0f,
+	.z = -1000.0f
+};
+
+matrix4x4_t proj_mat = (matrix4x4_t) {
+	.m[0] = {5.83739375f,      0.0f, 0.0f, 0.0f},
+	.m[1] = {       0.0f, 10.53983f, 0.0f, 0.0f},
+	.m[2] = {       0.0f,      0.0f, 1.0f, 1.0f},
+	.m[3] = {       0.0f,      0.0f,-0.1f, 0.0f}
+};
 
 void repaint(){
+
+	/**
+	 *   clear screen;
+	 **/
 	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BLACK);
+
+	/**
+	 *   increment angles depending on mouse movment
+	 **/
 	x_angle += ((float)__mouse_x - (float)prev_mx) / 100.0f;
-	y_angle += ((float)__mouse_y - (float)prev_my) / 100.0f;
+	y_angle -= ((float)__mouse_y - (float)prev_my) / 100.0f;
+
+	/**
+	 *   calculate cos and sin beforehand so it
+	 *   only needs to be done once for each;
+	 **/
 	float cos_x = cos(x_angle);
 	float sin_x = sin(x_angle);
 	float cos_y = cos(y_angle);
 	float sin_y = sin(y_angle);
+
+	/**
+	 *  set previous mouse pos to current pos;
+	 **/
 	prev_my = __mouse_y;
 	prev_mx = __mouse_x;
+
+	/**
+	 *  create x and y rotation matricies;
+	 **/
 	matrix4x4_t rx = (matrix4x4_t) {
 		.m[0] = {1.0f,  0.0f,   0.0f, 0.0f},
 		.m[1] = {0.0f, cos_y, -sin_y, 0.0f},
@@ -93,25 +126,76 @@ void repaint(){
 		.m[2] = {-sin_x, 0.0f, cos_x, 0.0f},
 		.m[3] = {  0.0f, 0.0f,  0.0f, 1.0f}
 	};
+
+	/**
+	 *  create scaling matrix;
+	 **/
 	matrix4x4_t scale_mat = (matrix4x4_t) {
-		.m[0] = {70.0f, 0.0, 0.0f, 0.0f},
-		.m[1] = {0.0,  70.0f, 0.0f, 0.0f},
-		.m[2] = {0.0f, 0.0f, 70.0f, 0.0f},
-		.m[3] = {0.0f, 0.0f, 0.0f, 1.0f}
+		.m[0] = {100.0f,    0.0,  0.0f, 0.0f},
+		.m[1] = {  0.0,  100.0f,  0.0f, 0.0f},
+		.m[2] = { 0.0f,   0.0f, 100.0f, 0.0f},
+		.m[3] = { 0.0f,   0.0f,  0.0f, 10.0f}
 	};
+
+	/**
+	 * multiply matricies to create the complete transformation matrix;
+	 **/
 	matrix4x4_t c_mat = mat4x4_mult(rx, ry);
 	c_mat = mat4x4_mult(c_mat, scale_mat);
+
 	for (size_t i = 0; i < 12; i++) {
+		/**
+		 *  create new triangle rotated and scaled;
+		 **/
 		triangle3d_t transformed = triangle_mult_matrix(cube[i], c_mat);
+
+		/**
+		 *  set the normal of the triangle;
+		 **/
+		tri_set_normal(&transformed);
+
+
+		/**
+		 *  move the triangle into the center of the screen
+		 **/
+
 		transformed.p1.x += 160;
 		transformed.p2.x += 160;
 		transformed.p3.x += 160;
 		transformed.p1.y += 100;
 		transformed.p2.y += 100;
 		transformed.p3.y += 100;
+		transformed.p1.z += 100;
+		transformed.p2.z += 100;
+		transformed.p3.z += 100;
 
-		tri_set_normal(&transformed);
-		draw_triangle(transformed, COLOR_BLUE);
+		/**
+		 *	calculate vector between point on triangle and the camera;
+		 **/
+		vec3d_t v_view = sub_vec3d(transformed.p1, camera);
+		v_view = normalized(v_view);
+
+		/**
+		 *   check how this vector projects onto the
+		 *   normal to the triangle;
+		 **/
+		if (transformed.normal.x * (transformed.p1.x - camera.x) +
+			 transformed.normal.y * (transformed.p1.y - camera.y) +
+		    transformed.normal.z * (transformed.p1.z - camera.z) < 0.0) {
+			/*transformed.p1 = project_vec(transformed.p1, proj_mat);
+			transformed.p2 = project_vec(transformed.p2, proj_mat);
+			transformed.p3 = project_vec(transformed.p3, proj_mat);
+
+			transformed.p1.x += 1.0f;
+			transformed.p2.x += 1.0f;
+			transformed.p3.x += 1.0f;
+			transformed.p1.y += 1.0f;
+			transformed.p2.y += 1.0f;
+			transformed.p3.y += 1.0f;*/
+
+			draw_triangle(transformed, COLOR_BLUE);
+		}
+
 	}
 }
 
