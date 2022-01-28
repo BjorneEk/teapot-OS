@@ -4,9 +4,9 @@
 ![Application preview](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-1.png)
 
 ![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-2.png)
-<br/>(sine wave animation)
+(sine wave animation)
 ![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-3.png)
-<br/>(first 3d renderer, with mouse controll)
+(first 3d renderer, with mouse controll)
 
 
 ## Current progress
