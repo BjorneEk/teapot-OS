@@ -45,6 +45,8 @@
 *.idb
 *.pdb
 
+obj-parser/dest/*.c
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
