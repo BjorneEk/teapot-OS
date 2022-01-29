@@ -35,4 +35,5 @@ typedef struct color {
 
 color_t from_radian(float r);
 
+color_t with_brightness(color_t color, float brightness);
 #endif /* GRAPHICS_H */

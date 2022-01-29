@@ -7,10 +7,6 @@
 #include "../include/math.h"
 
 
-
-
-
-
 int32_t floor(float x) {
 	return (x < 0) ? -(int32_t)((uint32_t)(abs(x))) : (int32_t)(uint32_t)(abs(x));
 }
@@ -49,11 +45,15 @@ float mod(float a, float b) {
  **/
 
 float __taylor_sin(float x){
-	return (1.00003 * x) - (0.000312267 * x*x) -
+	return (1.00003 * x) - (0.000312267 * x * x) -
 		(0.165537 * pow(x, 3)) - (0.00203937 * pow(x, 4)) +
 			(0.010286 * pow(x, 5)) - (0.000961693 * pow(x, 6));
 }
-
+/*
+float __taylor_cos(float x) {
+	return (1.0f − ((0.50f * x*x) + (0.04166666f * pow(x, 4)) − (0.0012888f * pow(x, 6)) + (0.00002480f * pow(x, 8))));
+}
+*/
 float sin(float x){
 	uint8_t sign;
 	float _x = (sign = (x < 0)) ? -x : x;
@@ -85,4 +85,8 @@ float sqrt(float x) {
 		b = x / a;
 	}
 	return a;
+}
+
+float rand(float seed) {
+	return sin(1000.0f * seed);
 }

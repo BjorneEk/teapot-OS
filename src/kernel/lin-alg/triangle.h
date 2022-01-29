@@ -49,5 +49,7 @@ triangle3d_t project_tri(triangle3d_t tri, float near, float far, float fov, flo
 
 void draw_triangle(triangle3d_t tri, color_t clr);
 
+void fill_triangle(triangle3d_t triangle, color_t color);
+
 
 #endif /* triangle_H */

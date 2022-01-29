@@ -56,3 +56,51 @@ void draw_triangle(triangle3d_t tri, color_t clr) {
 	draw_line((uint32_t)tri.p1.x, (uint32_t)tri.p1.y, (uint32_t)tri.p3.x, (uint32_t)tri.p3.y, clr.c);
 	draw_line((uint32_t)tri.p3.x, (uint32_t)tri.p3.y, (uint32_t)tri.p2.x, (uint32_t)tri.p2.y, clr.c);
 }
+
+/****************************************************************************
+ ****************************************************************************
+ *        for each corner draw a line from that corner                      *
+ *        to each point on the line between the two other                   *
+ *        corners. this fills the triangle however it is                    *
+ *        not verry efficent.                                               *
+ ****************************************************************************
+ ****************************************************************************/
+void fill_triangle(triangle3d_t triangle, color_t color) {
+
+	float itr_cnt = 0x4f;
+
+	/**
+	 *   lerp vector p2-->p3 used to lerp through and get
+	 *   second coordinate of line to draw.
+	 **/
+	vec3d_t lv = sub_vec3d(triangle.p2, triangle.p3);
+	float i;
+
+	for (i = 0; i < itr_cnt; i++) {
+		/**
+		 *   i/itr_cnt will be a number between 1 and 0
+		 *   this is used to lerp throgh p2-->p3, p3 must be
+		 *   added to place it in the correct final position.
+		 *
+		 *   funny color mode: from_radian(5*((i/itr_cnt))*PI).c
+		 **/
+		vec3d_t next = add_vec3d(triangle.p3, scale_vec3d(lv, i/(itr_cnt)));
+
+		draw_line((uint32_t)triangle.p1.x, (uint32_t)triangle.p1.y, (uint32_t)next.x, (uint32_t)next.y, color.c);
+	}
+
+
+	/**
+	 *  repeat for the other sides for a more uniform triangle;
+	 **/
+	lv = sub_vec3d(triangle.p2, triangle.p1);
+	for (i = 0; i < itr_cnt; i++) {
+		vec3d_t next = add_vec3d(triangle.p1, scale_vec3d(lv, i/(itr_cnt)));
+		draw_line((uint32_t)triangle.p3.x, (uint32_t)triangle.p3.y, (uint32_t)next.x, (uint32_t)next.y, color.c);
+	}
+	lv = sub_vec3d(triangle.p3, triangle.p1);
+	for (i = 0; i < itr_cnt; i++) {
+		vec3d_t next = add_vec3d(triangle.p1, scale_vec3d(lv, i/(itr_cnt)));
+		draw_line((uint32_t)triangle.p2.x, (uint32_t)triangle.p2.y, (uint32_t)next.x, (uint32_t)next.y, from_radian(5*((i/itr_cnt))*PI).c);
+	}
+}

@@ -32,24 +32,6 @@ triangle3d_t cube[] = {
 	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f, -0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
 };
 
-
-
-typedef struct mouse_event {
-	union {
-		uint8_t b;
-		struct {
-			uint8_t left_btn   : 1;
-			uint8_t right_btn  : 1;
-			uint8_t middle_btn : 1;
-			uint8_t always_one : 1;
-			uint8_t x_overflow : 1;
-			uint8_t y_overflow : 1;
-			uint8_t x_sign     : 1;
-			uint8_t y_sign     : 1;
-		};
-	};
-} mouse_evt_t;
-
 float NEAR = 0.1f;
 float FAR  = 1000.0f;
 float FOV  = 90.0f;
@@ -193,7 +175,8 @@ void repaint(){
 			transformed.p2.y += 1.0f;
 			transformed.p3.y += 1.0f;*/
 
-			draw_triangle(transformed, COLOR_BLUE);
+			fill_triangle(transformed, COLOR_BLUE);
+			draw_triangle(transformed, COLOR_PURPLE);
 		}
 
 	}
