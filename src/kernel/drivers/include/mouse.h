@@ -8,7 +8,7 @@
 
 #include "../../libc/include/int.h"
 
-typedef struct mouse_event {
+typedef struct internal_mouse_event {
 	union {
 		uint8_t b;
 		struct {
@@ -22,12 +22,12 @@ typedef struct mouse_event {
 			uint8_t y_sign     : 1;
 		};
 	};
-} mouse_evt_t;
+} _internal_mouse_evt_t;
 
 void init_mouse();
 
-extern int32_t __mouse_x;
-extern int32_t __mouse_y;
+extern uint32_t __mouse_x;
+extern uint32_t __mouse_y;
 
 extern float x_angle;
 extern float y_angle;

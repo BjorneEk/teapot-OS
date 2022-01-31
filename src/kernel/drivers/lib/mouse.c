@@ -4,6 +4,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "../include/mouse.h"
+#include "../include/event.h"
 #include "../include/ports.h"
 #include "../../cpu/isr.h"
 #include "../../graphics/graphics.h"
@@ -16,179 +17,76 @@
 
 #define WAIT_FOR_READ_OK 0
 #define WAIT_FOR_WRITE_OK 1
-#define TEAPOT_LENGTH 20 //6320
-/*triangle3d_t cube[] = {
-	{.p1={-0.5f, -0.5f, -0.5f,  1.0f}, .p2={-0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
-	{.p1={-0.5f,  0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
-	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f,  0.5f,  1.0f}},
-	{.p1={ 0.5f,  0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f,  0.5f,  1.0f}, .p3={ 0.5f, -0.5f,  0.5f,  1.0f}},
-	{.p1={ 0.5f, -0.5f,  0.5f,  1.0f}, .p2={ 0.5f,  0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
-	{.p1={ 0.5f,  0.5f,  0.5f,  1.0f}, .p2={-0.5f,  0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
-	{.p1={-0.5f, -0.5f,  0.5f,  1.0f}, .p2={-0.5f,  0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f, -0.5f,  1.0f}},
-	{.p1={-0.5f,  0.5f,  0.5f,  1.0f}, .p2={-0.5f,  0.5f, -0.5f,  1.0f}, .p3={-0.5f, -0.5f, -0.5f,  1.0f}},
-	{.p1={-0.5f,  0.5f, -0.5f,  1.0f}, .p2={-0.5f,  0.5f,  0.5f,  1.0f}, .p3={ 0.5f,  0.5f,  0.5f,  1.0f}},
-	{.p1={ 0.5f,  0.5f,  0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={-0.5f,  0.5f, -0.5f,  1.0f}},
-	{.p1={-0.5f, -0.5f,  0.5f,  1.0f}, .p2={-0.5f, -0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
-	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f, -0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
-};*/
 
-extern triangle3d_t cube[];
+uint32_t __mouse_x = 0;
+uint32_t __mouse_y = 0;
 
-float NEAR = 0.1f;
-float FAR  = 1000.0f;
-float FOV  = 90.0f;
-float ASPECT_RATIO = 200.0f / 320.0f;
-
-int32_t __mouse_x = 0;
-int32_t __mouse_y = 0;
-
-int32_t prev_mx = 0;
-int32_t prev_my = 0;
 uint8_t mouse_cycle = 0;
 int8_t  _dx = 0;
-mouse_evt_t last_evt;
-
-float x_angle = 0.0;
-float y_angle = 0.0;
+_internal_mouse_evt_t last_evt;
 
 uint8_t LEFT_BUTTON = 0;
 uint8_t RIGHT_BUTTON = 0;
+uint8_t MIDDLE_BUTTON = 0;
 
-vec3d_t camera = (vec3d_t){
-	.x = 160.0f,
-	.y = 100.0f,
-	.z = -90000.0f
-};
-vec3d_t light_dir = (vec3d_t){
-	.x = 0,
-	.y = 0.0,
-	.z = -1.0
-};
-
-/*matrix4x4_t proj_mat = (matrix4x4_t) {
-	.m[0] = {5.83739375f,      0.0f, 0.0f, 0.0f},
-	.m[1] = {       0.0f, 10.53983f, 0.0f, 0.0f},
-	.m[2] = {       0.0f,      0.0f, 1.0f, 1.0f},
-	.m[3] = {       0.0f,      0.0f,-0.1f, 0.0f}
-};*/
-matrix4x4_t proj_mat;
-
-void repaint(){
-
-	/**
-	 *   clear screen;
-	 **/
-
-
-	/**
-	 *   increment angles depending on mouse movment
-	 **/
-	x_angle += ((float)__mouse_x - (float)prev_mx) / 100.0f;
-	y_angle -= ((float)__mouse_y - (float)prev_my) / 100.0f;
-
-	/**
-	 *   calculate cos and sin beforehand so it
-	 *   only needs to be done once for each;
-	 **/
-	float cos_x = cos(x_angle);
-	float sin_x = sin(x_angle);
-	float cos_y = cos(y_angle);
-	float sin_y = sin(y_angle);
-
-	/**
-	 *  set previous mouse pos to current pos;
-	 **/
-	prev_my = __mouse_y;
-	prev_mx = __mouse_x;
-
-	/**
-	 *  create x and y rotation matricies;
-	 **/
-	matrix4x4_t rx = (matrix4x4_t) {
-		.m[0] = {1.0f,  0.0f,   0.0f, 0.0f},
-		.m[1] = {0.0f, cos_y, -sin_y, 0.0f},
-		.m[2] = {0.0f, sin_y,  cos_y, 0.0f},
-		.m[3] = {0.0f,   0.0f,  0.0f, 1.0f}
-	};
-	matrix4x4_t ry = (matrix4x4_t) {
-		.m[0] = { cos_x, 0.0f, sin_x, 0.0f},
-		.m[1] = {  0.0f, 1.0f,  0.0f, 0.0f},
-		.m[2] = {-sin_x, 0.0f, cos_x, 0.0f},
-		.m[3] = {  0.0f, 0.0f,  0.0f, 1.0f}
-	};
-	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BLACK);
-	for (size_t i = 0; i < TEAPOT_LENGTH; i++) {
-		/**
-		 *  create new triangle rotated and scaled;
-		 **/
-		triangle3d_t t = cube[i];
-
-		t.p1 = mat4x4_vec_mult(t.p1, rx);
-		t.p2 = mat4x4_vec_mult(t.p2, rx);
-		t.p3 = mat4x4_vec_mult(t.p3, rx);
-
-		t.p1 = mat4x4_vec_mult(t.p1, ry);
-		t.p2 = mat4x4_vec_mult(t.p2, ry);
-		t.p3 = mat4x4_vec_mult(t.p3, ry);
-
-		t.p1 = scale_vec3d(t.p1, 70);
-		t.p2 = scale_vec3d(t.p2, 70);
-		t.p3 = scale_vec3d(t.p3, 70);
-		/**
-		 *  set the normal of the triangle;
-		 **/
-		tri_set_normal(&t);
-
-
-		/**
-		 *  move the triangle into the center of the screen
-		 **/
-
-		t.p1.x += 160;
-		t.p2.x += 160;
-		t.p3.x += 160;
-		t.p1.y += 100;
-		t.p2.y += 100;
-		t.p3.y += 100;
-		t.p1.z += 100;
-		t.p2.z += 100;
-		t.p3.z += 100;
-
-		/**
-		 *	calculate vector between point on triangle and the camera;
-		 **/
-		vec3d_t v_view = sub_vec3d(t.p1, camera);
-		v_view = normalized(v_view);
-
-		/**
-		 *   check how this vector projects onto the
-		 *   normal to the triangle;
-		 **/
-
-		if (dot_prod(t.normal, v_view) < 0.0) {
-			float light = dot_prod(t.normal, normalized(light_dir));
-			fill_triangle(t, with_brightness(COLOR_WHITE, light));
-			//draw_triangle(t, COLOR_PURPLE);
-		}
-
-	}
-}
 
 void update_mouse_pos(int8_t dx, int8_t dy) {
-	if ((__mouse_x + dx) > VGA_WIDTH) __mouse_x = VGA_WIDTH;
-	else if ((__mouse_x + dx) < 0) __mouse_x = 0;
+
+	if (__mouse_x < abs(dx) && dx < 0) __mouse_x = 0;
+	else if (__mouse_x + dx > VGA_WIDTH - CURSOR_IMG_WIDTH) __mouse_x = VGA_WIDTH-CURSOR_IMG_WIDTH;
 	else __mouse_x += dx;
-	if ((__mouse_y + dy) > VGA_HEIGHT) __mouse_y = VGA_HEIGHT;
-	else if ((__mouse_y + dy) < 0) __mouse_y = 0;
+
+	if (__mouse_y < abs(dy) && dy < 0) __mouse_y = 0;
+	else if (__mouse_y + dy > VGA_HEIGHT - CURSOR_IMG_HEIGHT) __mouse_y = VGA_HEIGHT-CURSOR_IMG_HEIGHT;
 	else __mouse_y += dy;
-	__mouse_x = __mouse_x;
-	__mouse_y = __mouse_y;
-	if(LEFT_BUTTON) {
-		repaint();
-	} else {
-		prev_my = __mouse_y;
-		prev_mx = __mouse_x;
+
+	event_t evt;
+	evt.mouse.x = __mouse_x;
+	evt.mouse.y = __mouse_y;
+
+
+	if(last_evt.left_btn && !LEFT_BUTTON) {
+		evt.mouse.button = MOUSE_LEFT_BUTTON;
+		evt.type = Mouse_pressed;
 	}
+	else if (last_evt.right_btn && !RIGHT_BUTTON) {
+		evt.mouse.button = MOUSE_RIGHT_BUTTON;
+		evt.type = Mouse_pressed;
+	}
+	else if (last_evt.middle_btn && !MIDDLE_BUTTON) {
+		evt.mouse.button = MOUSE_MIDDLE_BUTTON;
+		evt.type = Mouse_pressed;
+	}
+	else if(LEFT_BUTTON && !last_evt.left_btn) {
+		evt.mouse.button = MOUSE_LEFT_BUTTON;
+		evt.type = Mouse_released;
+	}
+	else if(RIGHT_BUTTON && !last_evt.right_btn) {
+		evt.mouse.button = MOUSE_RIGHT_BUTTON;
+		evt.type = Mouse_released;
+	}
+	else if(MIDDLE_BUTTON && !last_evt.middle_btn) {
+		evt.mouse.button = MOUSE_MIDDLE_BUTTON;
+		evt.type = Mouse_released;
+	} else
+		evt.type = Mouse_moved;
+
+	/*if (LEFT_BUTTON != last_evt.left_btn) {
+		evt.mouse.button = MOUSE_LEFT_BUTTON;
+		evt.type = (MOUSE_LEFT_BUTTON) ? Mouse_released : Mouse_pressed;
+	} else if (RIGHT_BUTTON != last_evt.right_btn) {
+		evt.mouse.button = MOUSE_RIGHT_BUTTON;
+		evt.type = (MOUSE_RIGHT_BUTTON) ? Mouse_released : Mouse_pressed;
+	} else if (MIDDLE_BUTTON != last_evt.middle_btn) {
+		evt.mouse.button = MOUSE_MIDDLE_BUTTON;
+		evt.type = (MOUSE_MIDDLE_BUTTON) ? Mouse_released : Mouse_pressed;
+	}*/
+	refresh_cursor(__mouse_x, __mouse_y);
+	create_mouse_event(evt);
+	//refresh_cursor(__mouse_x, __mouse_y);
+	LEFT_BUTTON   = last_evt.left_btn;
+	RIGHT_BUTTON  = last_evt.right_btn;
+	MIDDLE_BUTTON = last_evt.middle_btn;
 }
 
 
@@ -206,21 +104,6 @@ void mouse_callback(registers_t *regs) {
 		case 2:
 			update_mouse_pos(_dx, -in_portb(0x60));
 			mouse_cycle=0;
-			if(last_evt.right_btn) {
-				display_mouse("mouse: ", "right-btn");
-				RIGHT_BUTTON = 1;
-			} else if(last_evt.left_btn) {
-				display_mouse("mouse: ", "left-btn");
-				LEFT_BUTTON = 1;
-			}else if(last_evt.middle_btn) {
-				display_mouse("mouse: ", "middle-btn");
-			} else {
-				display_mouse("mouse: ", "no-btn");
-				LEFT_BUTTON = 0;
-				RIGHT_BUTTON = 0;
-			}
-
-			refresh_cursor(__mouse_x, __mouse_y);
 			break;
 	}
 }
@@ -283,5 +166,4 @@ void init_mouse() {
 
 	//Setup the mouse handler
 	register_interrupt_handler(IRQ12, mouse_callback);
-	proj_mat = projection_matrix(NEAR, FAR, FOV, ASPECT_RATIO);
 }
