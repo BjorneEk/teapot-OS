@@ -68,6 +68,7 @@ void display_mouse(char * desc, char * msg) {
 	draw_string(3 + STATUS_BAR_OS_NAME_WIDTH, 2, desc, COLOR_RED);
 	draw_string(50 + STATUS_BAR_OS_NAME_WIDTH, 2, msg, COLOR_WHITE);
 }
-void refresh_cursor(int32_t x, int32_t y) {
-	update_cursor(((VGA_MEM+x)+(VGA_WIDTH * y)));
+
+void refresh_cursor(uint32_t x, uint32_t y) {
+	update_cursor(((VGA_MEM+x)+(VGA_WIDTH * y)), x, y);
 }

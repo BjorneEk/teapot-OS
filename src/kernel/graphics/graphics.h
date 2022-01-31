@@ -39,6 +39,6 @@ void set_last_key_with_trailing(char * key, char c);
 void set_os_name(char * name);
 void display_mouse(char * desc, char * msg);
 
-void refresh_cursor(int32_t x, int32_t y);
+void refresh_cursor(uint32_t x, uint32_t y);
 
 #endif /* GRAPHICS_H */

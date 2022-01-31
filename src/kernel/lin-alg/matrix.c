@@ -7,7 +7,7 @@
 #include "../libc/include/math.h"
 #include "../libc/include/string.h"
 
-
+/*
 matrix3x3_t rot_x_mat3x3(float v) {
 	return (matrix3x3_t)
 	{
@@ -80,7 +80,7 @@ matrix4x4_t scaling_matrix(vec3d_t xyz_scale) {
 		.m[3] = {       0.0f,        0.0f,        0.0f, 1.0f}
 	};
 }
-
+*/
 matrix4x4_t projection_matrix(float near, float far, float fov, float ar){
 	return (matrix4x4_t)
 	{
@@ -121,7 +121,7 @@ vec3d_t mat3x3_vec_mult(vec3d_t v, matrix3x3_t m) {
 		.z = (m.m[0][2] * v.x) + (m.m[1][2] * v.y) + (m.m[2][2] * v.z),
 	};
 }
-
+/*
 matrix4x4_t mat4x4_mult(matrix4x4_t m1, matrix4x4_t m2) {
 	matrix4x4_t res;
 	for (uint8_t i = 0; i < 4; i++) {
@@ -147,7 +147,7 @@ matrix3x3_t mat3x3_mult(matrix3x3_t m1, matrix3x3_t m2) {
 	}
 	return res;
 }
-
+*/
 void mat4x4_to_str(matrix4x4_t m, char str[]) {
 	for (size_t i = 0; i < 4; i++) {
 		for (size_t j = 0; j < 4; j++) {

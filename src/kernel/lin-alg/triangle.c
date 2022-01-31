@@ -23,7 +23,7 @@ uint8_t equals_tri(triangle3d_t t1, triangle3d_t t2) {
 void tri_set_normal(triangle3d_t * tri) {
 	tri->normal = normalized(cross_prod(sub_vec3d(tri->p1, tri->p2), sub_vec3d(tri->p1, tri->p3)));
 }
-
+/*
 triangle3d_t triangle_mult_matrix(triangle3d_t tri, matrix4x4_t m) {
 	return (triangle3d_t) {
 		.p1 = mat4x4_vec_mult(tri.p1, m),
@@ -31,25 +31,8 @@ triangle3d_t triangle_mult_matrix(triangle3d_t tri, matrix4x4_t m) {
 		.p3 = mat4x4_vec_mult(tri.p3, m),
 		.normal = mat4x4_vec_mult(tri.normal, m)
 	};
-}
+}*/
 
-triangle3d_t rotate_tri(triangle3d_t tri, float x, float y, float z) {
-	matrix4x4_t rot_mat = mat4x4_mult(rot_x_mat4x4(x), rot_y_mat4x4(y));
-	rot_mat = mat4x4_mult(rot_mat, rot_z_mat4x4(z));
-	return triangle_mult_matrix(tri, rot_mat);
-}
-
-triangle3d_t translate_tri(triangle3d_t tri, vec3d_t pos) {
-	return triangle_mult_matrix(tri, translation_matrix(pos));
-}
-
-triangle3d_t scale_tri(triangle3d_t tri, float scale) {
-	return triangle_mult_matrix(tri, scaling_matrix((vec3d_t){.x=scale,.y=scale,.z=scale}));
-}
-
-triangle3d_t project_tri(triangle3d_t tri, float near, float far, float fov, float ar) {
-	return triangle_mult_matrix(tri, projection_matrix(near, far, fov, ar));
-}
 
 void draw_triangle(triangle3d_t tri, color_t clr) {
 	draw_line((uint32_t)tri.p1.x, (uint32_t)tri.p1.y, (uint32_t)tri.p2.x, (uint32_t)tri.p2.y, clr.c);
@@ -66,67 +49,7 @@ void draw_triangle(triangle3d_t tri, color_t clr) {
  ****************************************************************************/
 void fill_triangle(triangle3d_t triangle, color_t color) {
 
-	float itr_cnt = 0x4f;
-
-	/**
-	 *   lerp vector p2-->p3 used to lerp through and get
-	 *   second coordinate of line to draw.
-	 **/
-	vec3d_t lv1 = sub_vec3d(triangle.p2, triangle.p3);
-	vec3d_t lv2 = sub_vec3d(triangle.p2, triangle.p1);
-	float i;
-
-	for (i = 0; i <= itr_cnt; i++) {
-		/**
-		 *   i/itr_cnt will be a number between 1 and 0
-		 *   this is used to lerp throgh p2-->p3, p3 must be
-		 *   added to place it in the correct final position.
-		 *
-		 *   in order to counterract the problem with the algorithm,
-		 *   (it is much better in the corners than around the midle
-		 *   and sides ot the triangle) the algorithm will create a
-		 *   'fractal tree' aproach
-		 *
-		 *   funny color mode: from_radian(5*((i/itr_cnt))*PI).c
-		 **/
-		vec3d_t next1 = add_vec3d(triangle.p3, scale_vec3d(sub_vec3d(triangle.p2, triangle.p3), i/(itr_cnt)));
-		vec3d_t next2 = add_vec3d(triangle.p1, scale_vec3d(sub_vec3d(triangle.p2, triangle.p1), i/(itr_cnt)));
-
-		draw_line((uint32_t)triangle.p1.x, (uint32_t)triangle.p1.y, (uint32_t)next1.x, (uint32_t)next1.y, color.c);
-		draw_line((uint32_t)triangle.p3.x, (uint32_t)triangle.p3.y, (uint32_t)next2.x, (uint32_t)next2.y, color.c);
-		if(i != itr_cnt) {
-			vec3d_t no1 = triangle.p1;
-			vec3d_t no2 = triangle.p3;
-			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j+=0.1) {
-				no1 = add_vec3d(no1, scale_vec3d(sub_vec3d(next1, no1), 0.2));
-				no2 = add_vec3d(no2, scale_vec3d(sub_vec3d(next2, no2), 0.2));
-				next1 = add_vec3d(triangle.p3, scale_vec3d(sub_vec3d(triangle.p2, triangle.p3), j));
-				next2 = add_vec3d(triangle.p1, scale_vec3d(sub_vec3d(triangle.p2, triangle.p1), j));
-				draw_line((uint32_t)no1.x, (uint32_t)no1.y, (uint32_t)next1.x, (uint32_t)next1.y, color.c);
-				draw_line((uint32_t)no2.x, (uint32_t)no2.y, (uint32_t)next2.x, (uint32_t)next2.y, color.c);
-			}
-		}
-	}
-
-
-	/**
-	 *  repeat for the other sides for a more uniform triangle;
-	 **/
-	/*lv = sub_vec3d(triangle.p2, triangle.p1);
-	for (i = 0; i < itr_cnt; i++) {
-		vec3d_t next = add_vec3d(triangle.p1, scale_vec3d(lv, i/(itr_cnt)));
-		draw_line((uint32_t)triangle.p3.x, (uint32_t)triangle.p3.y, (uint32_t)next.x, (uint32_t)next.y, color.c);
-	}
-	lv = sub_vec3d(triangle.p3, triangle.p1);
-	for (i = 0; i < itr_cnt; i++) {
-		vec3d_t next = add_vec3d(triangle.p1, scale_vec3d(lv, i/(itr_cnt)));
-		draw_line((uint32_t)triangle.p2.x, (uint32_t)triangle.p2.y, (uint32_t)next.x, (uint32_t)next.y, color.c);
-	}*/
-}
-#ifdef BÖG
-void fill_triangle(triangle3d_t triangle, color_t color) {
-
-	float itr_cnt = 0x2;
+	float itr_cnt = 0x3f;
 
 	/**
 	 *   lerp vector p2-->p3 used to lerp through and get
@@ -146,8 +69,7 @@ void fill_triangle(triangle3d_t triangle, color_t color) {
 		 *   in order to counterract the problem with the algorithm,
 		 *   (it is much better in the corners than around the midle
 		 *   and sides ot the triangle) the algorithm will create a
-		 *   'fractal tree' approach and create branches in order to
-		 *   increase its efficency on larger triangles.
+		 *   'fractal tree' aproach
 		 *
 		 *   funny color mode: from_radian(5*((i/itr_cnt))*PI).c
 		 **/
@@ -155,25 +77,25 @@ void fill_triangle(triangle3d_t triangle, color_t color) {
 		vec3d_t next2 = add_vec3d(triangle.p1, scale_vec3d(lv2, i/(itr_cnt)));
 		vec3d_t next3 = add_vec3d(triangle.p1, scale_vec3d(lv3, i/(itr_cnt)));
 
-		draw_line((uint32_t)triangle.p1.x, (uint32_t)triangle.p1.y, (uint32_t)next1.x, (uint32_t)next1.y, from_radian(5*((i/itr_cnt))*PI).c);
-		draw_line((uint32_t)triangle.p3.x, (uint32_t)triangle.p3.y, (uint32_t)next2.x, (uint32_t)next2.y, from_radian(5*((i/itr_cnt))*PI).c);
-		draw_line((uint32_t)triangle.p2.x, (uint32_t)triangle.p2.y, (uint32_t)next3.x, (uint32_t)next3.y, from_radian(5*((i/itr_cnt))*PI).c);
+		draw_line((uint32_t)triangle.p1.x, (uint32_t)triangle.p1.y, (uint32_t)next1.x, (uint32_t)next1.y, color.c);
+		draw_line((uint32_t)triangle.p3.x, (uint32_t)triangle.p3.y, (uint32_t)next2.x, (uint32_t)next2.y, color.c);
+		draw_line((uint32_t)triangle.p2.x, (uint32_t)triangle.p2.y, (uint32_t)next3.x, (uint32_t)next3.y, color.c);
+
 		if(i != itr_cnt) {
 			vec3d_t no1 = triangle.p1;
 			vec3d_t no2 = triangle.p3;
 			vec3d_t no3 = triangle.p2;
-			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j += 0.1) {
+			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j+=0.1) {
 				no1 = add_vec3d(no1, scale_vec3d(sub_vec3d(next1, no1), 0.2));
 				no2 = add_vec3d(no2, scale_vec3d(sub_vec3d(next2, no2), 0.2));
 				no3 = add_vec3d(no3, scale_vec3d(sub_vec3d(next3, no3), 0.2));
 				next1 = add_vec3d(triangle.p3, scale_vec3d(lv1, j));
-				next1 = add_vec3d(triangle.p1, scale_vec3d(lv2, j));
-				next1 = add_vec3d(triangle.p1, scale_vec3d(lv3, j));
-				draw_line((uint32_t)no1.x, (uint32_t)no1.y, (uint32_t)next1.x, (uint32_t)next1.y, from_radian(5*j*PI).c);
-				draw_line((uint32_t)no2.x, (uint32_t)no2.y, (uint32_t)next2.x, (uint32_t)next2.y, from_radian(5*j*PI).c);
-				draw_line((uint32_t)no3.x, (uint32_t)no3.y, (uint32_t)next3.x, (uint32_t)next3.y, from_radian(5*j*PI).c);
+				next2 = add_vec3d(triangle.p1, scale_vec3d(lv2, j));
+				next3 = add_vec3d(triangle.p1, scale_vec3d(lv3, j));
+				draw_line((uint32_t)no1.x, (uint32_t)no1.y, (uint32_t)next1.x, (uint32_t)next1.y, color.c);
+				draw_line((uint32_t)no2.x, (uint32_t)no2.y, (uint32_t)next2.x, (uint32_t)next2.y, color.c);
+				draw_line((uint32_t)no3.x, (uint32_t)no3.y, (uint32_t)next3.x, (uint32_t)next3.y, color.c);
 			}
 		}
 	}
 }
-#endif

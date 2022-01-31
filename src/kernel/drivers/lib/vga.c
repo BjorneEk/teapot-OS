@@ -36,12 +36,32 @@ cursor_t cursor =
 		{0,0,0,0,0},
 		{0,0,0,0,0}}
 };
+/**
+ * position of the cursor
+ **/
+uint16_t cursor_x;
+uint16_t cursor_y;
+
+/**
+ *  video memody address of cursor
+ **/
 uint8_t * prev_c = (uint8_t*)0xA0000;
 
 color_t cursor_color = (color_t){.r=0b111, .g=0b111, .b=0b11};
 
 
-
+uint8_t set_memory_with_curosr(uint8_t * v_mem_start, uint32_t x, uint32_t y, uint8_t color) {
+	int16_t __x = (x - cursor_x);
+	int16_t __y = (y - cursor_y);
+	if (__x < CURSOR_IMG_WIDTH && __x >= 0 && __y < CURSOR_IMG_HEIGHT && __y >= 0) {
+		if (cursor.img[__y][__x] != 0)
+			cursor.prev[__y][__x].c = color;
+		else
+			*v_mem_start = color;
+	}
+	else
+		*v_mem_start = color;
+}
 void vga_init_palette() {
 	out_portb(VGA_PALETTE_MASK, 0xFF);
 	out_portb(VGA_PALETTE_WRITE, 0);
@@ -81,6 +101,7 @@ void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	int32_t sy = ( y0 < h ) ? 1 : -1;
 	int32_t err = dx + dy;  /* error value e_xy */
 	while (!(x0 == w && y0 == h)){  /* loop */
+		//set_memory_with_curosr((v_ram + x0 + (y0 * 320)), x0, y0, color);
 		*(v_ram + x0 + (y0 * 320)) = color;
 		int32_t e2 = 2 * err;
 		if (e2 >= dy) {/* e_xy+e_x > 0 */
@@ -92,7 +113,7 @@ void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 			y0 += sy;
 		}
 	}
-	update_cursor(prev_c);
+	update_cursor(prev_c, cursor_x, cursor_y);
 }
 
 
@@ -101,9 +122,10 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	for (size_t y = 0; y < h * VGA_WIDTH; y += VGA_WIDTH) {
 		for (size_t x = 0; x < w; x++) {
 			*(v_ram + x + y) = color;
+			//set_memory_with_curosr((v_ram + x + y), x, y/VGA_WIDTH, color);
 		}
 	}
-	update_cursor(prev_c);
+	update_cursor(prev_c, cursor_x, cursor_y);
 }
 
 uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
@@ -114,9 +136,10 @@ uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
 			//if (FONT5X7[i][y][x])
 			if (font_at(i, x, y))
 				*(v_ram + x + (y*VGA_WIDTH)) = color;
+				//set_memory_with_curosr((v_ram + x + (y*VGA_WIDTH)), x, y, color);
 		}
 	}
-	update_cursor(prev_c);
+	update_cursor(prev_c, cursor_x, cursor_y);
 	return (uint8_t *)(v_ram + x + 1);
 }
 
@@ -165,7 +188,9 @@ void restore_cursor(){
 	}
 }
 
-void update_cursor(uint8_t * v_mem_start) {
+void update_cursor(uint8_t * v_mem_start, uint32_t x, uint32_t y) {
+	cursor_x = x;
+	cursor_y = y;
 	restore_cursor();
 	prev_c = v_mem_start;
 	read_cursor(prev_c);
@@ -174,6 +199,8 @@ void update_cursor(uint8_t * v_mem_start) {
 
 
 void vga_init_cursor(){
+	cursor_x = 320;
+	cursor_y = 200;
 	prev_c = vram_at(320, 200);
 	read_cursor(prev_c);
 	place_cursor(prev_c);
