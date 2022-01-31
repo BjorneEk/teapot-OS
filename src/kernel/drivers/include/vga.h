@@ -66,6 +66,6 @@ uint8_t * memset_image(uint8_t * v_mem_start,  vga_image_t img);
 
 void vga_init_cursor();
 
-void update_cursor(uint8_t * v_mem_start);
+void update_cursor(uint8_t * v_mem_start, uint32_t x, uint32_t y);
 
 #endif /* VGA_H */
