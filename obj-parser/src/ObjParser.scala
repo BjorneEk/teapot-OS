@@ -1,6 +1,6 @@
 package objparser
 
-import java.io.File
+import java.io.{File, FileWriter}
 import java.util.Scanner
 import collection.mutable.ArrayBuffer
 
@@ -50,6 +50,40 @@ class ObjParser(s : Scanner):
 				else if line(0) == 'v' then
 					vectors += readVector(line.substring(1))
 		BufferedObject(constructMesh(vectors.toVector, faces.toVector))
+
+
+	/**
+	 *  read a .obj file whith triangle faces
+	 *  and no normal data and save as a c file
+	 *  with similar format.
+	 **/
+	def writeAsC(name : String, vecName : String = "") : Unit =
+		val vectors = new ArrayBuffer[Vec3D]()
+		val faces   = new ArrayBuffer[Face]()
+		while(s.hasNext()) do
+			val line = s.nextLine().trim
+			if line.length > 1 then
+				if      line(0) == 'f' then
+					faces += readFace(line.substring(1))
+				else if line(0) == 'v' then
+					vectors += readVector(line.substring(1))
+
+		val writer = new FileWriter("dest/" + name + ".c");
+
+		writer.write("/**\n *   Generated code\n *\n *   @author Gustaf Franzén :: https://github.com/BjorneEk;\n *\n **/\n\n")
+		writer.write("#define " + name.toUpperCase + "_LENGTH " + faces.length + "\n\n")
+		writer.write(s"$vecName ${name}_vectors[] = {\n")
+
+		for v <- vectors do
+			writer.write(s"\t($vecName){${v.x}, ${v.y}, ${v.z}},\n")
+
+		writer.write(s"};\n\nint ${name}[][3] = {\n")
+		for f <- faces do
+			writer.write(s"\t{${f.a}, ${f.b}, ${f.c}},\n")
+		writer.write(s"};\n")
+		writer.write("/**\n *   End of generated code\n **/")
+		writer.close();
+
 
 object ObjParser:
 

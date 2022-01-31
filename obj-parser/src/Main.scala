@@ -8,5 +8,6 @@ object Main:
 			var n = false
 			if(args.length > 2 && args(2) == "normal") then n = true
 			val p = ObjParser("obj-files/" + args(0))
+			//p.writeAsC("cow_obj", "vec3d_t")
 			val bobj = p.parseObject()
 			bobj.writeAsC(args(1), "triangle3d_t", n);

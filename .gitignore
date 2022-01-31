@@ -45,7 +45,10 @@
 *.idb
 *.pdb
 
-obj-parser/dest/*.c
+# generated code
+cube.c
+cow.c
+teapot.c
 
 # Kernel Module Compile Results
 *.mod*
