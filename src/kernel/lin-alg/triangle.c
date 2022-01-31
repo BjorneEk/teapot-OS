@@ -44,7 +44,7 @@ triangle3d_t translate_tri(triangle3d_t tri, vec3d_t pos) {
 }
 
 triangle3d_t scale_tri(triangle3d_t tri, float scale) {
-	return triangle_mult_matrix(tri, scaling_matrix((vec3d_t){.x=scale,.y=scale,.z=scale,.w=1}));
+	return triangle_mult_matrix(tri, scaling_matrix((vec3d_t){.x=scale,.y=scale,.z=scale}));
 }
 
 triangle3d_t project_tri(triangle3d_t tri, float near, float far, float fov, float ar) {
@@ -101,6 +101,6 @@ void fill_triangle(triangle3d_t triangle, color_t color) {
 	lv = sub_vec3d(triangle.p3, triangle.p1);
 	for (i = 0; i < itr_cnt; i++) {
 		vec3d_t next = add_vec3d(triangle.p1, scale_vec3d(lv, i/(itr_cnt)));
-		draw_line((uint32_t)triangle.p2.x, (uint32_t)triangle.p2.y, (uint32_t)next.x, (uint32_t)next.y, from_radian(5*((i/itr_cnt))*PI).c);
+		draw_line((uint32_t)triangle.p2.x, (uint32_t)triangle.p2.y, (uint32_t)next.x, (uint32_t)next.y, color.c);
 	}
 }

@@ -16,8 +16,8 @@
 
 #define WAIT_FOR_READ_OK 0
 #define WAIT_FOR_WRITE_OK 1
-
-triangle3d_t cube[] = {
+#define TEAPOT_LENGTH 20 //6320
+/*triangle3d_t cube[] = {
 	{.p1={-0.5f, -0.5f, -0.5f,  1.0f}, .p2={-0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
 	{.p1={-0.5f,  0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
 	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f,  0.5f,  1.0f}},
@@ -30,7 +30,9 @@ triangle3d_t cube[] = {
 	{.p1={ 0.5f,  0.5f,  0.5f,  1.0f}, .p2={ 0.5f,  0.5f, -0.5f,  1.0f}, .p3={-0.5f,  0.5f, -0.5f,  1.0f}},
 	{.p1={-0.5f, -0.5f,  0.5f,  1.0f}, .p2={-0.5f, -0.5f, -0.5f,  1.0f}, .p3={ 0.5f, -0.5f, -0.5f,  1.0f}},
 	{.p1={ 0.5f, -0.5f, -0.5f,  1.0f}, .p2={ 0.5f, -0.5f,  0.5f,  1.0f}, .p3={-0.5f, -0.5f,  0.5f,  1.0f}},
-};
+};*/
+
+extern triangle3d_t cube[];
 
 float NEAR = 0.1f;
 float FAR  = 1000.0f;
@@ -116,7 +118,7 @@ void repaint(){
 		.m[0] = {100.0f,    0.0,  0.0f, 0.0f},
 		.m[1] = {  0.0,  100.0f,  0.0f, 0.0f},
 		.m[2] = { 0.0f,   0.0f, 100.0f, 0.0f},
-		.m[3] = { 0.0f,   0.0f,  0.0f, 10.0f}
+		.m[3] = { 0.0f,   0.0f,  0.0f, 1.0f}
 	};
 
 	/**
@@ -125,45 +127,69 @@ void repaint(){
 	matrix4x4_t c_mat = mat4x4_mult(rx, ry);
 	c_mat = mat4x4_mult(c_mat, scale_mat);
 
-	for (size_t i = 0; i < 12; i++) {
+	for (size_t i = 0; i < TEAPOT_LENGTH; i++) {
 		/**
 		 *  create new triangle rotated and scaled;
 		 **/
-		triangle3d_t transformed = triangle_mult_matrix(cube[i], c_mat);
+		//cube[i].p1.w = 1.0f;
+		//cube[i].p2.w = 1.0f;
+		//cube[i].p3.w = 1.0f;
+	//	triangle3d_t transformed = triangle_mult_matrix(cube[i], c_mat);
 
+		triangle3d_t t = cube[i];
+
+		t.p1 = mat4x4_vec_mult(t.p1, rx);
+		t.p2 = mat4x4_vec_mult(t.p2, rx);
+		t.p3 = mat4x4_vec_mult(t.p3, rx);
+
+		t.p1 = mat4x4_vec_mult(t.p1, ry);
+		t.p2 = mat4x4_vec_mult(t.p2, ry);
+		t.p3 = mat4x4_vec_mult(t.p3, ry);
+
+		t.p1 = scale_vec3d(t.p1, 100);
+		t.p2 = scale_vec3d(t.p2, 100);
+		t.p3 = scale_vec3d(t.p3, 100);
 		/**
 		 *  set the normal of the triangle;
 		 **/
-		tri_set_normal(&transformed);
+		tri_set_normal(&t);
 
 
 		/**
 		 *  move the triangle into the center of the screen
 		 **/
 
-		transformed.p1.x += 160;
-		transformed.p2.x += 160;
-		transformed.p3.x += 160;
-		transformed.p1.y += 100;
-		transformed.p2.y += 100;
-		transformed.p3.y += 100;
-		transformed.p1.z += 100;
-		transformed.p2.z += 100;
-		transformed.p3.z += 100;
-
+		t.p1.x += 160;
+		t.p2.x += 160;
+		t.p3.x += 160;
+		t.p1.y += 100;
+		t.p2.y += 100;
+		t.p3.y += 100;
+		t.p1.z += 100;
+		t.p2.z += 100;
+		t.p3.z += 100;
+		/*if(transformed.p1.x > 0.0 && transformed.p1.x < 320.0 && transformed.p1.y > 0.0 && transformed.p1.x <= 200.0) {
+			*(((VGA_MEM+(uint32_t)transformed.p1.x)+(VGA_WIDTH * (uint32_t)transformed.p1.y))) = 0xff;
+		}
+		if(transformed.p2.x > 0.0 && transformed.p2.x < 320.0 && transformed.p2.y > 0.0 && transformed.p2.x <= 200.0) {
+			*(((VGA_MEM+(uint32_t)transformed.p2.x)+(VGA_WIDTH * (uint32_t)transformed.p2.y))) = 0xff;
+		}
+		if(transformed.p3.x > 0.0 && transformed.p3.x < 320.0 && transformed.p3.y > 0.0 && transformed.p3.x <= 200.0) {
+			*(((VGA_MEM+(uint32_t)transformed.p3.x)+(VGA_WIDTH * (uint32_t)transformed.p3.y))) = 0xff;
+		}
+		*/
 		/**
 		 *	calculate vector between point on triangle and the camera;
 		 **/
-		vec3d_t v_view = sub_vec3d(transformed.p1, camera);
+		vec3d_t v_view = sub_vec3d(t.p1, camera);
 		v_view = normalized(v_view);
 
 		/**
 		 *   check how this vector projects onto the
 		 *   normal to the triangle;
 		 **/
-		if (transformed.normal.x * (transformed.p1.x - camera.x) +
-			 transformed.normal.y * (transformed.p1.y - camera.y) +
-		    transformed.normal.z * (transformed.p1.z - camera.z) < 0.0) {
+
+		if (dot_prod(t.normal, v_view) < 0.0) {
 			/*transformed.p1 = project_vec(transformed.p1, proj_mat);
 			transformed.p2 = project_vec(transformed.p2, proj_mat);
 			transformed.p3 = project_vec(transformed.p3, proj_mat);
@@ -174,9 +200,10 @@ void repaint(){
 			transformed.p1.y += 1.0f;
 			transformed.p2.y += 1.0f;
 			transformed.p3.y += 1.0f;*/
-
-			fill_triangle(transformed, COLOR_BLUE);
-			draw_triangle(transformed, COLOR_PURPLE);
+			//fill_rect(transformed.p2.x, transformed.p2.y, 1, 1, COLOR_PINK);
+			//fill_rect(transformed.p3.x, transformed.p3.y, 1, 1, COLOR_PINK);
+			fill_triangle(t, COLOR_BLUE);
+			draw_triangle(t, COLOR_PURPLE);
 		}
 
 	}

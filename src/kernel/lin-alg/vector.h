@@ -19,7 +19,6 @@ typedef struct vec3d {
 	float x;
 	float y;
 	float z;
-	float w;
 } vec3d_t;
 
 typedef struct vec2d {
@@ -70,8 +69,6 @@ uint8_t equals_v3d(vec3d_t v1, vec3d_t v2);
 vec3d_t cross_prod(vec3d_t v1, vec3d_t v2);
 
 float dot_prod(vec3d_t v1, vec3d_t v2);
-
-void normalize(vec3d_t * v);
 
 vec3d_t normalized(vec3d_t v);
 

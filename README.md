@@ -5,9 +5,11 @@
 
 ![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-2.png)
 (sine wave animation)
-![Application preview 2](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-3.png)
+![Application preview 3](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-3.png)
 (first 3d renderer, with mouse controll)
 
+![Application preview 4](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-4.png)
+![Application preview 5](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-5.png)
 
 ## Current progress
 - [x] **Bootloader** <span style="color:rgb(205, 120,62)"> enter 32 bit protected mode and run c code</span>

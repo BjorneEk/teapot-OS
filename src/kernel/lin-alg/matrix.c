@@ -95,30 +95,28 @@ matrix4x4_t projection_matrix(float near, float far, float fov, float ar){
 vec3d_t mat4x4_vec_mult(vec3d_t v, matrix4x4_t m) {
 	return (vec3d_t)
 	{
-		.x = (v.x * m.m[0][0]) + (v.y * m.m[1][0]) + (v.z * m.m[2][0]) + (v.w * m.m[3][0]),
-		.y = (v.x * m.m[0][1]) + (v.y * m.m[1][1]) + (v.z * m.m[2][1]) + (v.w * m.m[3][1]),
-		.z = (v.x * m.m[0][2]) + (v.y * m.m[1][2]) + (v.z * m.m[2][2]) + (v.w * m.m[3][2]),
-		.w = (v.x * m.m[0][3]) + (v.y * m.m[1][3]) + (v.z * m.m[2][3]) + (v.w * m.m[3][3])
+		.x = (v.x * m.m[0][0]) + (v.y * m.m[1][0]) + (v.z * m.m[2][0]),
+		.y = (v.x * m.m[0][1]) + (v.y * m.m[1][1]) + (v.z * m.m[2][1]),
+		.z = (v.x * m.m[0][2]) + (v.y * m.m[1][2]) + (v.z * m.m[2][2]),
 	};
 }
 
 vec3d_t project_vec(vec3d_t v, matrix4x4_t m) {
 	vec3d_t res = mat4x4_vec_mult(v, m);
-	if (res.w != 0) {
+/*	if (res.w != 0) {
 		res.x /= res.w;
 		res.y /= res.w;
 		res.z /= res.w;
-	}
+	}*/
 	return res;
 }
 
 vec3d_t mat3x3_vec_mult(vec3d_t v, matrix3x3_t m) {
 	return (vec3d_t)
 	{
-		.x = (m.r1.x * v.x) + (m.r1.y * v.y) + (m.r1.z * v.z),
-		.y = (m.r2.x * v.x) + (m.r2.y * v.y) + (m.r2.z * v.z),
-		.z = (m.r3.x * v.x) + (m.r3.y * v.y) + (m.r3.z * v.z),
-		.w = v.w
+		.x = (m.m[0][0] * v.x) + (m.m[1][0] * v.y) + (m.m[2][0] * v.z),
+		.y = (m.m[0][1] * v.x) + (m.m[1][1] * v.y) + (m.m[2][1] * v.z),
+		.z = (m.m[0][2] * v.x) + (m.m[1][2] * v.y) + (m.m[2][2] * v.z),
 	};
 }
 
