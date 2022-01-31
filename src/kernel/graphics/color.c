@@ -14,7 +14,7 @@ color_t from_radian(float r) {
 color_t with_brightness(color_t color, float brightness){
 	return (color_t) {
 		.r    = (uint32_t)(color.r * brightness),
-		.g    = (uint32_t)(color.r * brightness),
-		.b    = (uint32_t)(color.r * brightness)
+		.g    = (uint32_t)(color.g * brightness),
+		.b    = (uint32_t)(color.b * brightness)
 	};
 }

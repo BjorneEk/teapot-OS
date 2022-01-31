@@ -82,11 +82,10 @@ matrix4x4_t scaling_matrix(vec3d_t xyz_scale) {
 }
 
 matrix4x4_t projection_matrix(float near, float far, float fov, float ar){
-	float fov_rad = 1.0f / tan(fov * 0.5f / 180.0f * PI);
 	return (matrix4x4_t)
 	{
-		.m[0] = {ar * fov_rad, 0.0f    , 0.0f                        , 0.0f},
-		.m[1] = {0.0f         , fov_rad, 0.0f                        , 0.0f},
+		.m[0] = {ar * 12.53983, 0.0f    , 0.0f                       , 0.0f},
+		.m[1] = {0.0f         , 12.53983, 0.0f                       , 0.0f},
 		.m[2] = {0.0f         , 0.0f    , far / (far - near)         , 1.0f},
 		.m[3] = {0.0f         , 0.0f    , (-far * near) / (far- near), 0.0f}
 	};
@@ -101,14 +100,17 @@ vec3d_t mat4x4_vec_mult(vec3d_t v, matrix4x4_t m) {
 	};
 }
 
-vec3d_t project_vec(vec3d_t v, matrix4x4_t m) {
-	vec3d_t res = mat4x4_vec_mult(v, m);
-/*	if (res.w != 0) {
-		res.x /= res.w;
-		res.y /= res.w;
-		res.z /= res.w;
-	}*/
-	return res;
+void project_vec(vec3d_t * v, matrix4x4_t m) {
+	vec3d_t i = *v;
+	v->x    = (i.x * m.m[0][0]) + (i.y * m.m[1][0]) + (i.z * m.m[2][0]) + m.m[3][0];
+	v->y    = (i.x * m.m[0][1]) + (i.y * m.m[1][1]) + (i.z * m.m[2][1]) + m.m[3][1];
+	v->z    = (i.x * m.m[0][2]) + (i.y * m.m[1][2]) + (i.z * m.m[2][2]) + m.m[3][2];
+	float w = (i.x * m.m[0][3]) + (i.y * m.m[1][3]) + (i.z * m.m[2][3]) + m.m[3][3];
+	if (w >= 0) {
+		v->x /= w;
+		v->y /= w;
+		v->z /= w;
+	}
 }
 
 vec3d_t mat3x3_vec_mult(vec3d_t v, matrix3x3_t m) {

@@ -40,7 +40,7 @@ matrix4x4_t projection_matrix(float near, float far, float fov, float ar);
 
 void mat4x4_to_str(matrix4x4_t m, char str[]);
 
-vec3d_t project_vec(vec3d_t v, matrix4x4_t m);
+void project_vec(vec3d_t * v, matrix4x4_t m);
 
 
 /**

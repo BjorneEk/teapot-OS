@@ -79,7 +79,7 @@ set_video_mode:
 [bits 16]
 load_kernel:
 	mov bx, KERNEL_OFFSET  ; bx -> destination
-	mov dh, 55             ; dh -> num sectors
+	mov dh, 56             ; dh -> num sectors
 	mov dl, [BOOT_DRIVE]   ; dl -> disk
 	call disk_read
 	ret

@@ -57,22 +57,28 @@ uint8_t RIGHT_BUTTON = 0;
 vec3d_t camera = (vec3d_t){
 	.x = 160.0f,
 	.y = 100.0f,
-	.z = -1000.0f
+	.z = -90000.0f
+};
+vec3d_t light_dir = (vec3d_t){
+	.x = 0,
+	.y = 0.0,
+	.z = -1.0
 };
 
-matrix4x4_t proj_mat = (matrix4x4_t) {
+/*matrix4x4_t proj_mat = (matrix4x4_t) {
 	.m[0] = {5.83739375f,      0.0f, 0.0f, 0.0f},
 	.m[1] = {       0.0f, 10.53983f, 0.0f, 0.0f},
 	.m[2] = {       0.0f,      0.0f, 1.0f, 1.0f},
 	.m[3] = {       0.0f,      0.0f,-0.1f, 0.0f}
-};
+};*/
+matrix4x4_t proj_mat;
 
 void repaint(){
 
 	/**
 	 *   clear screen;
 	 **/
-	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BLACK);
+
 
 	/**
 	 *   increment angles depending on mouse movment
@@ -110,32 +116,11 @@ void repaint(){
 		.m[2] = {-sin_x, 0.0f, cos_x, 0.0f},
 		.m[3] = {  0.0f, 0.0f,  0.0f, 1.0f}
 	};
-
-	/**
-	 *  create scaling matrix;
-	 **/
-	matrix4x4_t scale_mat = (matrix4x4_t) {
-		.m[0] = {100.0f,    0.0,  0.0f, 0.0f},
-		.m[1] = {  0.0,  100.0f,  0.0f, 0.0f},
-		.m[2] = { 0.0f,   0.0f, 100.0f, 0.0f},
-		.m[3] = { 0.0f,   0.0f,  0.0f, 1.0f}
-	};
-
-	/**
-	 * multiply matricies to create the complete transformation matrix;
-	 **/
-	matrix4x4_t c_mat = mat4x4_mult(rx, ry);
-	c_mat = mat4x4_mult(c_mat, scale_mat);
-
+	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BLACK);
 	for (size_t i = 0; i < TEAPOT_LENGTH; i++) {
 		/**
 		 *  create new triangle rotated and scaled;
 		 **/
-		//cube[i].p1.w = 1.0f;
-		//cube[i].p2.w = 1.0f;
-		//cube[i].p3.w = 1.0f;
-	//	triangle3d_t transformed = triangle_mult_matrix(cube[i], c_mat);
-
 		triangle3d_t t = cube[i];
 
 		t.p1 = mat4x4_vec_mult(t.p1, rx);
@@ -146,9 +131,9 @@ void repaint(){
 		t.p2 = mat4x4_vec_mult(t.p2, ry);
 		t.p3 = mat4x4_vec_mult(t.p3, ry);
 
-		t.p1 = scale_vec3d(t.p1, 100);
-		t.p2 = scale_vec3d(t.p2, 100);
-		t.p3 = scale_vec3d(t.p3, 100);
+		t.p1 = scale_vec3d(t.p1, 70);
+		t.p2 = scale_vec3d(t.p2, 70);
+		t.p3 = scale_vec3d(t.p3, 70);
 		/**
 		 *  set the normal of the triangle;
 		 **/
@@ -168,16 +153,7 @@ void repaint(){
 		t.p1.z += 100;
 		t.p2.z += 100;
 		t.p3.z += 100;
-		/*if(transformed.p1.x > 0.0 && transformed.p1.x < 320.0 && transformed.p1.y > 0.0 && transformed.p1.x <= 200.0) {
-			*(((VGA_MEM+(uint32_t)transformed.p1.x)+(VGA_WIDTH * (uint32_t)transformed.p1.y))) = 0xff;
-		}
-		if(transformed.p2.x > 0.0 && transformed.p2.x < 320.0 && transformed.p2.y > 0.0 && transformed.p2.x <= 200.0) {
-			*(((VGA_MEM+(uint32_t)transformed.p2.x)+(VGA_WIDTH * (uint32_t)transformed.p2.y))) = 0xff;
-		}
-		if(transformed.p3.x > 0.0 && transformed.p3.x < 320.0 && transformed.p3.y > 0.0 && transformed.p3.x <= 200.0) {
-			*(((VGA_MEM+(uint32_t)transformed.p3.x)+(VGA_WIDTH * (uint32_t)transformed.p3.y))) = 0xff;
-		}
-		*/
+
 		/**
 		 *	calculate vector between point on triangle and the camera;
 		 **/
@@ -190,20 +166,9 @@ void repaint(){
 		 **/
 
 		if (dot_prod(t.normal, v_view) < 0.0) {
-			/*transformed.p1 = project_vec(transformed.p1, proj_mat);
-			transformed.p2 = project_vec(transformed.p2, proj_mat);
-			transformed.p3 = project_vec(transformed.p3, proj_mat);
-
-			transformed.p1.x += 1.0f;
-			transformed.p2.x += 1.0f;
-			transformed.p3.x += 1.0f;
-			transformed.p1.y += 1.0f;
-			transformed.p2.y += 1.0f;
-			transformed.p3.y += 1.0f;*/
-			//fill_rect(transformed.p2.x, transformed.p2.y, 1, 1, COLOR_PINK);
-			//fill_rect(transformed.p3.x, transformed.p3.y, 1, 1, COLOR_PINK);
-			fill_triangle(t, COLOR_BLUE);
-			draw_triangle(t, COLOR_PURPLE);
+			float light = dot_prod(t.normal, normalized(light_dir));
+			fill_triangle(t, with_brightness(COLOR_WHITE, light));
+			//draw_triangle(t, COLOR_PURPLE);
 		}
 
 	}
@@ -318,4 +283,5 @@ void init_mouse() {
 
 	//Setup the mouse handler
 	register_interrupt_handler(IRQ12, mouse_callback);
+	proj_mat = projection_matrix(NEAR, FAR, FOV, ASPECT_RATIO);
 }
