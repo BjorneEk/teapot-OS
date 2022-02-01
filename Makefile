@@ -10,7 +10,7 @@ ASMBLR = nasm
 LNKR = x86_64-elf-ld
 VM = qemu-system-i386
 
-C_FLAGS = -g -m32 -ffreestanding -c
+C_FLAGS = -g -m32 -ffreestanding -c -Wall
 LNKR_FLAGS = -m elf_i386
 
 HEADERS = $(wildcard src/kernel/drivers/include/*.h src/kernel/libc/include/*.h src/kernel/graphics/*.h src/kernel/cpu/*.h src/kernel/lin-alg/*.h)

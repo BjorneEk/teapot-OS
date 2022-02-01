@@ -34,6 +34,16 @@ void draw_char(int32_t x, int32_t y, char c, color_t clr);
 ///
 uint8_t * draw_string(int32_t x, int32_t y, char * str, color_t clr);
 
+void debug();
+
+void new_line();
+
+void clear();
+
+void prompt();
+
+void print(char * str, color_t clr);
+
 void set_last_key(char * key);
 void set_last_key_with_trailing(char * key, char c);
 void set_os_name(char * name);

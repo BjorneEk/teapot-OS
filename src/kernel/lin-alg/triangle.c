@@ -85,10 +85,10 @@ void fill_triangle(triangle3d_t triangle, color_t color) {
 			vec3d_t no1 = triangle.p1;
 			vec3d_t no2 = triangle.p3;
 			vec3d_t no3 = triangle.p2;
-			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j+=0.1) {
-				no1 = add_vec3d(no1, scale_vec3d(sub_vec3d(next1, no1), 0.2));
-				no2 = add_vec3d(no2, scale_vec3d(sub_vec3d(next2, no2), 0.2));
-				no3 = add_vec3d(no3, scale_vec3d(sub_vec3d(next3, no3), 0.2));
+			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j+=0.05) {
+				no1 = add_vec3d(no1, scale_vec3d(sub_vec3d(next1, no1), 0.1));
+				no2 = add_vec3d(no2, scale_vec3d(sub_vec3d(next2, no2), 0.1));
+				no3 = add_vec3d(no3, scale_vec3d(sub_vec3d(next3, no3), 0.1));
 				next1 = add_vec3d(triangle.p3, scale_vec3d(lv1, j));
 				next2 = add_vec3d(triangle.p1, scale_vec3d(lv2, j));
 				next3 = add_vec3d(triangle.p1, scale_vec3d(lv3, j));

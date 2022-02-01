@@ -42,6 +42,8 @@ cursor_t cursor =
 uint16_t cursor_x;
 uint16_t cursor_y;
 
+uint8_t * text_cursor = (uint8_t*)0xA0000;
+
 /**
  *  video memody address of cursor
  **/
@@ -49,19 +51,6 @@ uint8_t * prev_c = (uint8_t*)0xA0000;
 
 color_t cursor_color = (color_t){.r=0b111, .g=0b111, .b=0b11};
 
-
-uint8_t set_memory_with_curosr(uint8_t * v_mem_start, uint32_t x, uint32_t y, uint8_t color) {
-	int16_t __x = (x - cursor_x);
-	int16_t __y = (y - cursor_y);
-	if (__x < CURSOR_IMG_WIDTH && __x >= 0 && __y < CURSOR_IMG_HEIGHT && __y >= 0) {
-		if (cursor.img[__y][__x] != 0)
-			cursor.prev[__y][__x].c = color;
-		else
-			*v_mem_start = color;
-	}
-	else
-		*v_mem_start = color;
-}
 void vga_init_palette() {
 	out_portb(VGA_PALETTE_MASK, 0xFF);
 	out_portb(VGA_PALETTE_WRITE, 0);
@@ -116,7 +105,6 @@ void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	update_cursor(prev_c, cursor_x, cursor_y);
 }
 
-
 void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	uint8_t * v_ram = v_mem_start;
 	for (size_t y = 0; y < h * VGA_WIDTH; y += VGA_WIDTH) {
@@ -141,6 +129,23 @@ uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
 	}
 	update_cursor(prev_c, cursor_x, cursor_y);
 	return (uint8_t *)(v_ram + x + 1);
+}
+/**
+ * scrolls entire screen one character height up
+ **/
+void vga_scroll() {
+	uint8_t * v_ram = VGA_MEM;
+	uint8_t * v_ram_old = VGA_MEM + ((FONT_HEIGHT+2) * VGA_WIDTH);
+	uint8_t * end_of_v_ram = ((VGA_MEM+VGA_WIDTH)+(VGA_WIDTH * VGA_HEIGHT));
+	while (v_ram_old != end_of_v_ram) {
+		(*v_ram) = (*v_ram_old);
+		v_ram++;
+		v_ram_old++;
+	}
+}
+
+void vga_append_char(uint16_t i, uint8_t color) {
+	text_cursor = memset_5x7font(text_cursor, i, color);
 }
 
 uint8_t * memset_image(uint8_t * v_mem_start,  vga_image_t img) {
@@ -204,4 +209,9 @@ void vga_init_cursor(){
 	prev_c = vram_at(320, 200);
 	read_cursor(prev_c);
 	place_cursor(prev_c);
+}
+
+void init_VGA_driver() {
+	vga_init_palette();
+	vga_init_cursor();
 }

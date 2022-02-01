@@ -16,6 +16,13 @@
 #include "cpu/idt.h"
 #include "cpu/isr.h"
 
+
+uint8_t SHELL_MODE = true;
+uint8_t DRAW_MODE = false;
+
+char cmd[100];
+uint8_t cmd_len = 0;
+
 #define TEAPOT_LENGTH 20
 
 extern triangle3d_t cube[];
@@ -149,14 +156,36 @@ void delay(uint32_t t) {
 		__asm__ __volatile__("nop");
 	}
 }
+void animate() {
+	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
+		for (float x = 0; x < VGA_WIDTH + 70; x++) {
+			for (size_t y_off = 0; y_off < 54; y_off++) {
+				float y;
+				if(x < VGA_WIDTH) {
+					y =2.0f + ((sin(x/30) + sin(x/15)) * 30);
+						fill_rect((uint32_t)x, (uint32_t)y + (y_off*5), 1, 1, from_radian(x/2));
+				}
+				if (x >= 70) {
+					y =2.0f + ((sin((x-150)/30) + sin((x-150)/15)) * 30);
+						fill_rect((uint32_t)(x-70), (uint32_t)y + (y_off*5), 1, 1, COLOR_BLACK);
+				}
+			}
+
+		delay(0x4FFFFF);
+	}
+	SHELL_MODE = true;
+	clear();
+}
 
 void handle_event(event_t evt) {
 	switch (evt.type) {
 		case Mouse_moved:
-			if (MOUSE1)
-				repaint(__slow_safe_int_to_float(evt.mouse.x), __slow_safe_int_to_float(evt.mouse.y));
-			prev_x = evt.mouse.x;
-			prev_y = evt.mouse.y;
+			if (DRAW_MODE) {
+				if (MOUSE1)
+					repaint(__slow_safe_int_to_float(evt.mouse.x), __slow_safe_int_to_float(evt.mouse.y));
+				prev_x = evt.mouse.x;
+				prev_y = evt.mouse.y;
+			}
 			break;
 		case Mouse_pressed:
 			switch (evt.mouse.button) {
@@ -186,49 +215,110 @@ void handle_event(event_t evt) {
 					break;
 			}
 			break;
-	}
+		case Key_pressed:
+			if(SHELL_MODE) {
+				switch (evt.key.scancode) {
+					case KEY_ENTER:
+						cmd[cmd_len] = '\0';
+						cmd_len++;
+						new_line();
+						if(!strcmp(cmd, "draw")) {
 
+							print(cmd, COLOR_GREEN);
+							delay(0x4FFFFFF);
+							DRAW_MODE = true;
+							SHELL_MODE = false;
+							fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, (color_t){.r=0b101, .g=0b111, .b=0b11});
+							new_line();
+
+						} else if (!strcmp(cmd, "ls")){
+
+							print("draw  ", COLOR_PURPLE);
+							print("help  ", COLOR_WHITE);
+							print("ls  ", COLOR_WHITE);
+							print("clear  ", COLOR_WHITE);
+							print("scroll  ", COLOR_WHITE);
+							print("animate  ", COLOR_PURPLE);
+							new_line();
+
+						} else if (!strcmp(cmd, "clear")){
+
+							clear();
+
+						} else if (!strcmp(cmd, "debug")){
+
+							debug();
+
+						} else if (!strcmp(cmd, "animate")){
+
+							SHELL_MODE = false;
+							animate();
+
+						} else if (!strcmp(cmd, "scroll")){
+
+							scroll();
+
+						} else if (!strcmp(cmd, "help")){
+
+							print("teapot-os help menu:", COLOR_YELLOW);
+							new_line();
+							print("type : ", COLOR_WHITE);
+							print("ls   ", COLOR_GREEN);
+							print("to list available commands", COLOR_WHITE);
+							new_line();
+
+						} else {
+							print("tea-shell: ", COLOR_WHITE);
+							print(cmd, COLOR_RED);
+							print(", unrecognized command", COLOR_WHITE);
+							new_line();
+						}
+						prompt();
+						cmd_len = 0;
+						break;
+					case KEY_BACKSPACE:
+						cmd_len--;
+						print_backspace();
+						break;
+					default:
+						char str[5];
+						itoa(evt.key.scancode, str);
+						set_last_key(str);
+						break;
+				}
+				if(evt.key.key_char != UNKNOWN_SCANCODE_CHAR) {
+					cmd[cmd_len] = evt.key.key_char;
+					cmd_len++;
+					append_char(evt.key.key_char, COLOR_WHITE);
+				}
+
+			} else {
+				if (evt.key.scancode == KEY_ESCAPE) {
+					SHELL_MODE = true;
+					DRAW_MODE = false;
+					fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
+					set_cursor(2, 2);
+					print("Welcome to teapot-OS\n -", COLOR_WHITE);
+				}
+			}
+			break;
+		case Key_released:
+			break;
+	}
 }
 
 void main() {
-	//malloc_init();
-	init_listener(handle_event, MOUSE_LISTENER);
-	vga_init_palette();
-	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_PINK);
-	draw_string((VGA_WIDTH / 2) - 7, 60, "    welcome to\n    teapot-os\n\n by gustaf franzen", COLOR_BLACK);
+	malloc_init();
+	init_listener(handle_event, GLOBAL_LISTENER);
+	init_VGA_driver();
 	isr_install();
-	//draw_string((VGA_WIDTH / 2) -  30, 77, "Installing interrupt service routines (ISRs).", COLOR_BLACK);
 	__asm__ __volatile__("sti");
-	//draw_string((VGA_WIDTH / 2) - 15, 83, "Enabeling interrupts", COLOR_BLACK);
 	init_keyboard();
 	init_mouse();
-	vga_init_cursor();
-	//draw_string((VGA_WIDTH / 2) - 15, 83, "initializing keyboard drivers", COLOR_BLACK);
 	proj_mat = projection_matrix(NEAR, FAR, FOV, ASPECT_RATIO);
 
-	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, (color_t){.r=0b101, .g=0b111, .b=0b11});
-	fill_rect(0, 0, VGA_WIDTH, STATUS_BAR_HEIGHT, COLOR_STATBAR);
+	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
 	set_os_name("teapot-os");
-
-	/*
-	for(;;){
-		for (float x = 0; x < VGA_WIDTH + 70; x++) {
-			for (size_t y_off = 0; y_off < 34; y_off++) {
-				float y;
-				if(x < VGA_WIDTH) {
-					y =2.0f + (sin(x/30) * 30);
-					if((uint32_t)y + (y_off*5) > STATUS_BAR_HEIGHT)
-						fill_rect((uint32_t)x, (uint32_t)y + (y_off*5), 1, 1, from_radian(x/2));
-				}
-				if (x >= 70) {
-					y =2.0f + (sin((x-70)/30) * 30);
-					if((uint32_t)y + (y_off*5) > STATUS_BAR_HEIGHT)
-						fill_rect((uint32_t)(x-70), (uint32_t)y + (y_off*5), 1, 1, COLOR_BLACK);
-				}
-			}
-
-		delay(0x4FFFFF);
-		}
-	}
-	*/
+	set_cursor(2, 2);
+	print("Welcome to teapot-OS\n -", COLOR_WHITE);
 }

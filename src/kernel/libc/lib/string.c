@@ -24,6 +24,14 @@ void reverse(char s[]) {
 	}
 }
 
+int8_t strcmp(char * s1, char * s2) {
+	for(uint8_t i = 0; s1[i] != '\0'; i++) {
+		if(s2[i] == '\0' || s2[i] < s1[i]) return 1;
+		if(s2[i] > s1[i]) return -1;
+	}
+	return 0;
+}
+
 uint32_t nbr_of_digits(uint32_t n) {
 	uint32_t count = 0;
 	for (; n != 0; n /=10) ++count;

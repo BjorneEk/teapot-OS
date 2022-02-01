@@ -317,6 +317,42 @@ const font_char_t FONT5X7_COMPACT[] = {
 		0b0001000,
 		0b0001000,
 		0b0000000,
+	}, (font_char_t){
+		0b0000000,
+		0b0001000,
+		0b0011100,
+		0b0001000,
+		0b0000000,
+	}, (font_char_t){
+		0b0000000,
+		0b0101000,
+		0b0010000,
+		0b0101000,
+		0b0000000,
+	}, (font_char_t){
+		0b0000001,
+		0b0000110,
+		0b0001000,
+		0b0110000,
+		0b1000000,
+	}, (font_char_t){
+		0b0000000,
+		0b0100100,
+		0b0100100,
+		0b0100100,
+		0b0000000,
+	}, (font_char_t){
+		0b1000010,
+		0b1000010,
+		0b0100100,
+		0b0011000,
+		0b0000000,
+	}, (font_char_t){
+		0b0000000,
+		0b0011000,
+		0b0100100,
+		0b1000010,
+		0b1000010,
 	}
 };
 
@@ -763,6 +799,12 @@ uint16_t get_idx_from_char(uint8_t c) {
 			case ')': return PARANTHESIS_R_IDX;
 			case '(': return PARANTHESIS_L_IDX;
 			case '-': return DASH_IDX;
+			case '+': return PLUSS_IDX;
+			case '*': return STAR_IDX;
+			case '/': return SLASH_IDX;
+			case '=': return EQUALS_IDX;
+			case '<': return LESS_THAN_IDX;
+			case '>': return GREATER_THAN_IDX;
 			default:
 				if (c <= NUM_END && c >= NUM_START)
 					return ((uint8_t)c - NUM_START) + NUM_IDX_START;

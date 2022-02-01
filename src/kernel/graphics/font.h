@@ -24,9 +24,15 @@
 #define SQ_BRACET_R_IDX      47
 #define SQ_BRACET_L_IDX      48
 #define DASH_IDX             49
-#define INVALID_IDX          55 /// a index outside of the range covvered by FONT5X7
+#define PLUSS_IDX            50
+#define STAR_IDX             51
+#define SLASH_IDX            52
+#define EQUALS_IDX           53
+#define LESS_THAN_IDX        54
+#define GREATER_THAN_IDX     55
+#define INVALID_IDX          57 /// a index outside of the range covvered by FONT5X7
 
-#define FONT_LENGTH 50
+#define FONT_LENGTH 56
 #define FONT_WIDTH  5
 #define FONT_HEIGHT 7
 
@@ -65,7 +71,7 @@ typedef struct font_char{
 } font_char_t;
 
 extern char * font_supported_chars;
-extern const uint8_t FONT5X7[50][7][5];
+//extern const uint8_t FONT5X7[50][7][5];
 
 extern const font_char_t FONT5X7_COMPACT[];
 

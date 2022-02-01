@@ -32,6 +32,11 @@
 #define KEY_Y     0x15
 #define KEY_Z     0x2C
 
+#define KEY_LEFT_ARROW             0x4B
+#define KEY_RIGHT_ARROW            0x4D
+#define KEY_UP_ARROW               0x48
+#define KEY_DOWN_ARROW             0x50
+
 #define KEY_MINUS                 0x0C
 #define KEY_SEMICOLON             0x27
 #define KEY_COMMA                 0x33
@@ -50,10 +55,12 @@
 #define KEY_LCTRL                 0x1D
 #define KEY_RCTRL                 0xE0
 #define KEY_LSHIFT                0x2A
-#define KEY_RSHIFT                0x37
+#define KEY_RSHIFT                0x36
 #define KEY_LALT                  0x38
 #define KEY_SPACE                 0x39
 #define KEY_CAPS_LOCK             0x3A
+
+#define KEY_LESS_THAN             0x29
 
 #define KEY_F1                    0x3B
 #define KEY_F2                    0x3C

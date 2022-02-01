@@ -19,6 +19,8 @@ uint32_t strlen(char * str);
  **/
 void reverse(char s[]);
 
+int8_t strcmp(char * s1, char * s2);
+
 uint32_t nbr_of_digits(uint32_t n);
 
 /**

@@ -43,6 +43,8 @@ typedef struct VGA_image {
                             **/
 } vga_image_t;
 
+extern uint8_t * text_cursor;
+
 void vga_init_palette();
 
 void put_pixel(uint16_t pos_x, uint16_t pos_y, uint8_t vga_color);
@@ -62,10 +64,16 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color);
 ///
 uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color);
 
+void vga_scroll();
+
+void vga_append_char(uint16_t i, uint8_t color);
+
 uint8_t * memset_image(uint8_t * v_mem_start,  vga_image_t img);
 
 void vga_init_cursor();
 
 void update_cursor(uint8_t * v_mem_start, uint32_t x, uint32_t y);
+
+void init_VGA_driver();
 
 #endif /* VGA_H */

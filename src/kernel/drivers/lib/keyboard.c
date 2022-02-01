@@ -9,15 +9,11 @@
 #include "../../cpu/isr.h"
 #include "../../graphics/graphics.h"
 #include "../../libc/include/string.h"
+uint8_t SHIFT_DOWN = false;
+uint8_t ALT_DOWN = false;
+uint8_t CTRL_DOWN = false;
 
 char get_char_from_scancode(uint8_t sc) {
-	if(sc <= 0x0B) {
-		switch (sc) {
-			case KEY_ESCAPE: return UNKNOWN_SCANCODE_CHAR;
-			case 0x0B: return '0';
-			default: return sc + 48;
-		}
-	}
 	if(sc > 0x81 && sc <= 0x8B) {
 		switch (sc) {
 			case 0x8B: return '0';
@@ -25,6 +21,16 @@ char get_char_from_scancode(uint8_t sc) {
 		}
 	}
 	switch (sc) {
+		case 0x02: return (SHIFT_DOWN) ? '!' : '1';
+		case 0x03: return (SHIFT_DOWN) ? '"' : (ALT_DOWN) ? '@' : '2';
+		case 0x04: return (SHIFT_DOWN) ? '#' : '3';
+		case 0x05: return '4';
+		case 0x06: return (SHIFT_DOWN) ? '%' : '5';
+		case 0x07: return (SHIFT_DOWN) ? '&' : '6';
+		case 0x08: return (SHIFT_DOWN) ? '/' : (ALT_DOWN) ? '{' : '7';
+		case 0x09: return (SHIFT_DOWN) ? '(' : (ALT_DOWN) ? '[' : '8';
+		case 0x0a: return (SHIFT_DOWN) ? ')' : (ALT_DOWN) ? ']' : '9';
+		case 0x0b: return (SHIFT_DOWN) ? '=' : (ALT_DOWN) ? '}' : '0';
 		case KEY_A:
 		case KEY_RELEASED_A: return 'a';
 		case KEY_B:
@@ -77,9 +83,12 @@ char get_char_from_scancode(uint8_t sc) {
 		case KEY_RELEASED_Y: return 'y';
 		case KEY_Z:
 		case KEY_RELEASED_Z: return 'z';
+		case KEY_SPACE:
+		case KEY_RELEASED_SPACE: return ' ';
 
+		case KEY_LESS_THAN:               return (SHIFT_DOWN) ? '>' : '<';
 		case KEY_MINUS:
-		case KEY_RELEASED_MINUS:          return '-';
+		case KEY_RELEASED_MINUS:          return (ALT_DOWN) ? '?' : (SHIFT_DOWN) ? '+' : '-';
 		case KEY_SEMICOLON:
 		case KEY_RELEASED_SEMICOLON:      return ';';
 		case KEY_COMMA:
@@ -89,7 +98,7 @@ char get_char_from_scancode(uint8_t sc) {
 		case KEY_SINGLE_QUOTE:
 		case KEY_RELEASED_SINGLE_QUOTE:   return '\'';
 		case KEY_BACKSLASH:
-		case KEY_RELEASED_BACKSLASH:      return '\\';
+		case KEY_RELEASED_BACKSLASH:      return (SHIFT_DOWN) ? '*' : '\\';
 		case KEY_SLASH:
 		case KEY_RELEASED_SLASH:          return '/';
 		case KEY_LSQARE_BRACKET:
@@ -104,8 +113,29 @@ char get_char_from_scancode(uint8_t sc) {
 
 static void keyboard_callback(registers_t *regs) {
 	uint8_t sc = in_portb(0x60);
+	switch (sc) {
+		case KEY_LALT:
+			ALT_DOWN = true;
+			break;
+		case KEY_LSHIFT:
+		case KEY_RSHIFT:
+			SHIFT_DOWN = true;
+			break;
+		case KEY_LCTRL:
+		case KEY_RCTRL:
+			CTRL_DOWN = true;
+		case KEY_RELEASED_LALT:
+			ALT_DOWN = false;
+			break;
+		case KEY_RELEASED_LSHIFT:
+		case KEY_RELEASED_RSHIFT:
+			SHIFT_DOWN = false;
+			break;
+		case KEY_RELEASED_LCTRL:
+			CTRL_DOWN = false;
+	}
 	event_t evt;
-	evt.type = (sc >= 0x80) ? Key_pressed : Key_released;
+	evt.type = (sc >= 0x80) ?  Key_released : Key_pressed;
 	evt.key.key_char = get_char_from_scancode(sc);
 	evt.key.scancode = sc;
 	create_keyboard_event(evt);
