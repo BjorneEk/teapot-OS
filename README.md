@@ -29,7 +29,7 @@
 - [x] **Clean up VGA driver** <span style="color:rgb(205, 120,62)"> differentiate more between VGA driver and graphics lib</span>
 - [x] **Linear algebra** <span style="color:rgb(205, 120,62)"> port library from [this project](https://github.com/BjorneEk/3d-graphics) in preparation for 3D rendering</span>
 - [x] **3D-renderer** <span style="color:rgb(205, 120,62)"> implement 3D-renderer </span>
-- [ ] **Event handeler** <span style="color:rgb(205, 120,62)">create a event handeler to interface with device drivers</span>
+- [x] **Event handeler** <span style="color:rgb(205, 120,62)">create a event handeler to interface with device drivers</span>
 - [ ] **Memory allocator** <span style="color:rgb(205, 120,62)">create a memory allocator</span>
 - [ ] **teapot time** <span style="color:rgb(205, 120,62)"> render a utah teapot referencing [this project](https://github.com/BjorneEk/3d-graphics) </span>
 - [ ] **Run on hardware** <span style="color:rgb(205, 120,62)"> run teapot os natively on real hardware (potentialy 2013 MacBook Air) </span>
@@ -42,9 +42,9 @@
 	- [x] **Math** <span style="color:rgb(205, 120,62)"> math functions especialy trigonometry functions like sin(x)</span>
 ---
 - **Improved kernel GUI** <span style="color:rgb(205, 120,62)">made to handle a simple GUI for the kernel</span>
-	- [x] **frame buffer** <span style="color:rgb(205, 120,62)">create a pixel depth frame buffer or something with similar functionality</span>
-	- [x] **Window Manager** <span style="color:rgb(205, 120,62)">create window manager that supports drawing to windows instead of screen as a whole</span>
-	- [x] **Window based events** <span style="color:rgb(205, 120,62)"> a neat way for windows to handle their own events</span>
+	- [ ] **frame buffer** <span style="color:rgb(205, 120,62)">create a pixel depth frame buffer or something with similar functionality</span>
+	- [ ] **Window Manager** <span style="color:rgb(205, 120,62)">create window manager that supports drawing to windows instead of screen as a whole</span>
+	- [ ] **Window based events** <span style="color:rgb(205, 120,62)"> a neat way for windows to handle their own events</span>
 
 <img alt="lang" src="https://img.shields.io/github/languages/top/bjorneek/teapot-os"/>
 <img alt="size" src="https://img.shields.io/github/repo-size/bjorneek/teapot-os"/>
