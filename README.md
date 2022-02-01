@@ -40,8 +40,11 @@
 	- [x] **Graphics library** <span style="color:rgb(205, 120,62)"> </span>
 	- [x] **String utils** <span style="color:rgb(205, 120,62)"> converting and concating </span>
 	- [x] **Math** <span style="color:rgb(205, 120,62)"> math functions especialy trigonometry functions like sin(x)</span>
-
-
+---
+- **Improved kernel GUI** <span style="color:rgb(205, 120,62)">made to handle a simple GUI for the kernel</span>
+	- [x] **frame buffer** <span style="color:rgb(205, 120,62)">create a pixel depth frame buffer or something with similar functionality</span>
+	- [x] **Window Manager** <span style="color:rgb(205, 120,62)">create window manager that supports drawing to windows instead of screen as a whole</span>
+	- [x] **Window based events** <span style="color:rgb(205, 120,62)"> a neat way for windows to handle their own events</span>
 
 <img alt="lang" src="https://img.shields.io/github/languages/top/bjorneek/teapot-os"/>
 <img alt="size" src="https://img.shields.io/github/repo-size/bjorneek/teapot-os"/>
