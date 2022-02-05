@@ -34,6 +34,12 @@ void draw_char(int32_t x, int32_t y, char c, color_t clr);
 ///
 uint8_t * draw_string(int32_t x, int32_t y, char * str, color_t clr);
 
+void print_backspace();
+
+void append_char(char c, color_t clr);
+
+void scroll();
+
 void debug();
 
 void new_line();
@@ -50,5 +56,7 @@ void set_os_name(char * name);
 void display_mouse(char * desc, char * msg);
 
 void refresh_cursor(uint32_t x, uint32_t y);
+
+void set_cursor(int32_t x, int32_t y);
 
 #endif /* GRAPHICS_H */

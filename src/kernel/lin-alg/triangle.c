@@ -39,6 +39,7 @@ void draw_triangle(triangle3d_t tri, color_t clr) {
 	draw_line((uint32_t)tri.p1.x, (uint32_t)tri.p1.y, (uint32_t)tri.p3.x, (uint32_t)tri.p3.y, clr.c);
 	draw_line((uint32_t)tri.p3.x, (uint32_t)tri.p3.y, (uint32_t)tri.p2.x, (uint32_t)tri.p2.y, clr.c);
 }
+
 /****************************************************************************
  ****************************************************************************
  *        for each corner draw a line from that corner                      *
@@ -49,7 +50,7 @@ void draw_triangle(triangle3d_t tri, color_t clr) {
  ****************************************************************************/
 void fill_triangle(triangle3d_t triangle, color_t color) {
 
-	float itr_cnt = 0x3f;
+	float itr_cnt = 0x36;
 
 	/**
 	 *   lerp vector p2-->p3 used to lerp through and get
@@ -85,10 +86,10 @@ void fill_triangle(triangle3d_t triangle, color_t color) {
 			vec3d_t no1 = triangle.p1;
 			vec3d_t no2 = triangle.p3;
 			vec3d_t no3 = triangle.p2;
-			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j+=0.05) {
-				no1 = add_vec3d(no1, scale_vec3d(sub_vec3d(next1, no1), 0.1));
-				no2 = add_vec3d(no2, scale_vec3d(sub_vec3d(next2, no2), 0.1));
-				no3 = add_vec3d(no3, scale_vec3d(sub_vec3d(next3, no3), 0.1));
+			for (float j = (i)/(itr_cnt); j < (i+1)/(itr_cnt); j+=0.1) {
+				no1 = add_vec3d(no1, scale_vec3d(sub_vec3d(next1, no1), 0.2));
+				no2 = add_vec3d(no2, scale_vec3d(sub_vec3d(next2, no2), 0.2));
+				no3 = add_vec3d(no3, scale_vec3d(sub_vec3d(next3, no3), 0.2));
 				next1 = add_vec3d(triangle.p3, scale_vec3d(lv1, j));
 				next2 = add_vec3d(triangle.p1, scale_vec3d(lv2, j));
 				next3 = add_vec3d(triangle.p1, scale_vec3d(lv3, j));

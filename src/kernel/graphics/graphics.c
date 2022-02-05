@@ -71,7 +71,7 @@ void new_line() {
 void clear() {
 	text_row = 0;
 	set_cursor(2, STATUS_BAR_HEIGHT+2 + text_row*(FONT_HEIGHT+2));
-	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, COLOR_BLACK);
+	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
 }
 
 void prompt(){

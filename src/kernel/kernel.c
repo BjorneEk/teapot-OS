@@ -93,7 +93,7 @@ void repaint(float x, float y){
  		.m[3] = {  0.0f, 0.0f,  0.0f, 1.0f}
  	};
 
-	fill_rect(0, STATUS_BAR_HEIGHT, VGA_WIDTH, VGA_HEIGHT-STATUS_BAR_HEIGHT, (color_t){.r=0b101, .g=0b111, .b=0b11});
+	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, (color_t){.r=0b101, .g=0b111, .b=0b11});
 	for (size_t i = 0; i < TEAPOT_LENGTH; i++) {
 		/**
 		 *  create new triangle rotated and scaled;
@@ -122,14 +122,7 @@ void repaint(float x, float y){
 		 **/
 
 		t.p1.x += 160;
-		t.p2.x += 160;
-		t.p3.x += 160;
-		t.p1.y += 100;
-		t.p2.y += 100;
-		t.p3.y += 100;
-		t.p1.z += 100;
-		t.p2.z += 100;
-		t.p3.z += 100;
+
 
 		/**
 		 *	calculate vector between point on triangle and the camera;
@@ -143,6 +136,14 @@ void repaint(float x, float y){
 		 **/
 
 		if (dot_prod(t.normal, v_view) < 0.0) {
+			t.p2.x += 160;
+			t.p3.x += 160;
+			t.p1.y += 100;
+			t.p2.y += 100;
+			t.p3.y += 100;
+			t.p1.z += 100;
+			t.p2.z += 100;
+			t.p3.z += 100;
 			float light = dot_prod(t.normal, normalized(light_dir));
 			fill_triangle(t, with_brightness((color_t){.r=0b111, .g=0, .b=0b11}, light));
 			//draw_triangle(t, COLOR_PURPLE);
@@ -156,6 +157,7 @@ void delay(uint32_t t) {
 		__asm__ __volatile__("nop");
 	}
 }
+
 void animate() {
 	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
 		for (float x = 0; x < VGA_WIDTH + 70; x++) {
@@ -222,7 +224,11 @@ void handle_event(event_t evt) {
 						cmd[cmd_len] = '\0';
 						cmd_len++;
 						new_line();
-						if(!strcmp(cmd, "draw")) {
+						if(!strcmp(cmd, "")) {
+
+							new_line();
+
+						}else if(!strcmp(cmd, "draw")) {
 
 							print(cmd, COLOR_GREEN);
 							delay(0x4FFFFFF);
@@ -239,6 +245,7 @@ void handle_event(event_t evt) {
 							print("clear  ", COLOR_WHITE);
 							print("scroll  ", COLOR_WHITE);
 							print("animate  ", COLOR_PURPLE);
+							print("debug  ", COLOR_PURPLE);
 							new_line();
 
 						} else if (!strcmp(cmd, "clear")){

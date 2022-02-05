@@ -80,7 +80,7 @@ void clear_pixel(uint16_t pos_x, uint16_t pos_y) {
 ///  Bresenham's line algorithm
 ///  https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 ///
-void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
+void memset_line(uint8_t * restrict v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	uint8_t * v_ram = v_mem_start;
 	int32_t x0 = 0;
 	int32_t y0 = 0;
@@ -102,10 +102,9 @@ void memset_line(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 			y0 += sy;
 		}
 	}
-	update_cursor(prev_c, cursor_x, cursor_y);
 }
 
-void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
+void memset_rect(uint8_t * restrict v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	uint8_t * v_ram = v_mem_start;
 	for (size_t y = 0; y < h * VGA_WIDTH; y += VGA_WIDTH) {
 		for (size_t x = 0; x < w; x++) {
@@ -116,7 +115,7 @@ void memset_rect(uint8_t * v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	update_cursor(prev_c, cursor_x, cursor_y);
 }
 
-uint8_t * memset_5x7font(uint8_t * v_mem_start, uint16_t i, uint8_t color) {
+uint8_t * memset_5x7font(uint8_t * restrict v_mem_start, uint16_t i, uint8_t color) {
 	uint8_t * v_ram = v_mem_start;
 	size_t x;
 	for (size_t y = 0; y < FONT_HEIGHT; y++) {
