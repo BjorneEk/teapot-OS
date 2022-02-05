@@ -12,6 +12,7 @@
 ![Application preview 5](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-5.png)
 ![Application preview 6](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-6.png)
 ![Application preview 7](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-7.png)
+![Application preview 7](https://github.com/BjorneEk/teapot-os/blob/master/docs/teapot-os-8.png)
 
 ## Current progress
 - [x] **Bootloader** <span style="color:rgb(205, 120,62)"> enter 32 bit protected mode and run c code</span>
@@ -31,9 +32,7 @@
 - [x] **3D-renderer** <span style="color:rgb(205, 120,62)"> implement 3D-renderer </span>
 - [x] **Event handeler** <span style="color:rgb(205, 120,62)">create a event handeler to interface with device drivers</span>
 - [ ] **Memory allocator** <span style="color:rgb(205, 120,62)">create a memory allocator</span>
-- [ ] **teapot time** <span style="color:rgb(205, 120,62)"> render a utah teapot referencing [this project](https://github.com/BjorneEk/3d-graphics) </span>
 - [ ] **Run on hardware** <span style="color:rgb(205, 120,62)"> run teapot os natively on real hardware (potentialy 2013 MacBook Air) </span>
-- [ ] **Create documentation** <span style="color:rgb(205, 120,62)"> document the code and project</span>
 ---
 - **standard library** <span style="color:rgb(205, 120,62)">create neccesary utilities</span>
 	- [x] **Fixed width ints** <span style="color:rgb(205, 120,62)"> *for neater code* </span>

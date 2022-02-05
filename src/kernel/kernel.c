@@ -160,16 +160,16 @@ void delay(uint32_t t) {
 
 void animate() {
 	fill_rect(0, 0, VGA_WIDTH, VGA_HEIGHT, COLOR_BLACK);
-		for (float x = 0; x < VGA_WIDTH + 70; x++) {
+		for (float x = 0; x < VGA_WIDTH + 150; x++) {
 			for (size_t y_off = 0; y_off < 54; y_off++) {
 				float y;
 				if(x < VGA_WIDTH) {
-					y =2.0f + ((sin(x/30) + sin(x/15)) * 30);
+					y = 2.0f + ((sin(x/30) + sin(x/15)) * 30);
 						fill_rect((uint32_t)x, (uint32_t)y + (y_off*5), 1, 1, from_radian(x/2));
 				}
-				if (x >= 70) {
-					y =2.0f + ((sin((x-150)/30) + sin((x-150)/15)) * 30);
-						fill_rect((uint32_t)(x-70), (uint32_t)y + (y_off*5), 1, 1, COLOR_BLACK);
+				if (x >= 150) {
+					y = 2.0f + ((sin((x-150)/30) + sin((x-150)/15)) * 30);
+						fill_rect((uint32_t)(x-150), (uint32_t)y + (y_off*5), 1, 1, COLOR_BLACK);
 				}
 			}
 
