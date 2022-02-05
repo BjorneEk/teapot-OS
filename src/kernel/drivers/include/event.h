@@ -8,6 +8,23 @@
 
 #include "../../libc/include/int.h"
 
+/**
+ *    used when calling init_listener
+ *    in order to specify what kind of listener
+ *    should be created
+ **/
+#define GLOBAL_LISTENER     0
+#define MOUSE_LISTENER      1
+#define KEY_LISTENER        2
+
+
+#define MOUSE_LEFT_BUTTON   0
+#define MOUSE_RIGHT_BUTTON  1
+#define MOUSE_MIDDLE_BUTTON 2
+
+/**
+ *    used in event to know what caused the event
+ **/
 typedef enum event_type {
 	Key_pressed,
 	Key_released,
@@ -16,19 +33,11 @@ typedef enum event_type {
 	Mouse_moved
 } event_type_t;
 
-#define GLOBAL_LISTENER       0
-#define MOUSE_LISTENER        1
-#define KEY_LISTENER          2
-
-#define MOUSE_LEFT_BUTTON   0
-#define MOUSE_RIGHT_BUTTON  1
-#define MOUSE_MIDDLE_BUTTON 2
-
 struct key_event {
 
-	char key_char;     /**
-                       *   char representation of the pressed button
-                       **/
+	char key_char;  /**
+                    *   char representation of the pressed button
+                    **/
 
 	uint8_t scancode;  /**
                        *   keyboard scancode of pressed button
@@ -42,12 +51,11 @@ struct mouse_event {
                      *   is related to
                      **/
 
-	uint32_t x;    /**
-                   *   the x and y coordinates the mouse
-                   *   cursor had when the event occured
-                   **/
+	uint32_t x;  /**
+                 *   the x and y coordinates the mouse
+                 *   cursor had when the event occured
+                 **/
 	uint32_t y;
-
 };
 
 typedef struct event {
@@ -78,8 +86,20 @@ typedef struct event {
 
 typedef void (*event_listener_t)(event_t);
 
+/**
+ *    initialize a event_listener function
+ *    so that it starts recieving events.
+ *
+ *    @param listener_type represents what kind of events
+ *           it is suposed to listen for
+ **/
 void init_listener(event_listener_t evt_listener, uint8_t listener_type);
 
+
+/**
+ *    used bo keyboard an mouse drivers to
+ *    create events when they occure
+ **/
 void create_mouse_event(event_t evt);
 
 void create_keyboard_event(event_t evt);

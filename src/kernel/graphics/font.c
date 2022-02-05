@@ -6,10 +6,6 @@
 #include "font.h"
 #include "../libc/include/malloc.h"
 
-
-#define OLD_FONT
-#undef OLD_FONT
-
 char * font_supported_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ0123456789.,:;!?";
 
 /**

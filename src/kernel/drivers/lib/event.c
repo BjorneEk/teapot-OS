@@ -5,11 +5,6 @@
 
 #include "../include/event.h"
 
-/**
- *   temporary sulution, reimplement with
- *   linked lists once memory allocator works
- **/
-
 static event_listener_t global_listeners[3];
 uint8_t glob_list_cnt = 0;
 

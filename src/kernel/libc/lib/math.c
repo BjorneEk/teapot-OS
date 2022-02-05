@@ -49,11 +49,7 @@ float __taylor_sin(float x){
 		(0.165537 * pow(x, 3)) - (0.00203937 * pow(x, 4)) +
 			(0.010286 * pow(x, 5)) - (0.000961693 * pow(x, 6));
 }
-/*
-float __taylor_cos(float x) {
-	return (1.0f − ((0.50f * x*x) + (0.04166666f * pow(x, 4)) − (0.0012888f * pow(x, 6)) + (0.00002480f * pow(x, 8))));
-}
-*/
+
 float sin(float x){
 	uint8_t sign;
 	float _x = (sign = (x < 0)) ? -x : x;
@@ -68,6 +64,14 @@ float sin(float x){
 float cos(float x) {
 	return sin(((PI/2.0f) - x));
 }
+
+
+/*
+float __taylor_cos(float x) {
+	return (1.0f − ((0.50f * x*x) + (0.04166666f * pow(x, 4)) − (0.0012888f * pow(x, 6)) + (0.00002480f * pow(x, 8))));
+}
+*/
+
 
 /**
  * cheat tan function implemented since tan(v) = sin(v)/cos(v);

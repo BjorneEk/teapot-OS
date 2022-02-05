@@ -7,6 +7,10 @@
 
 #include "../libc/include/int.h"
 
+/**
+ *   bitfield used to represent a single byte color
+ *   with 3 red, 3 green and 2 blue bits.
+ **/
 typedef struct color {
 	union{
 		uint8_t c;
@@ -33,7 +37,15 @@ typedef struct color {
 #define COLOR_STATBAR (color_t){.r=0b100, .g=0b100, .b=0b10}
 #define COLOR_BACKGROUND (color_t){.r=0b000, .g=0b100, .b=0b01}
 
+
+/**
+ *   used to create rainbow effects.
+ **/
 color_t from_radian(float r);
 
+/**
+ *  create a new color from another color but at a certain brightness.
+ **/
 color_t with_brightness(color_t color, float brightness);
+
 #endif /* GRAPHICS_H */

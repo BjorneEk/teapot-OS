@@ -8,6 +8,10 @@
 
 #include "../../libc/include/int.h"
 
+/**
+ *    bitfield used to interract whith the
+ *    data packet recived from the mouse.
+ **/
 typedef struct internal_mouse_event {
 	union {
 		uint8_t b;
@@ -26,11 +30,12 @@ typedef struct internal_mouse_event {
 
 void init_mouse();
 
+/**
+ *    used for convinience to enable direct acces
+ *    to the last mouse position, primarily used for
+ *    drawing the cursor.
+ **/
 extern uint32_t __mouse_x;
 extern uint32_t __mouse_y;
-
-extern float x_angle;
-extern float y_angle;
-
 
 #endif /* MOUSE_H */

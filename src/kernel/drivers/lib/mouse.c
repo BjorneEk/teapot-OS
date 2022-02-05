@@ -10,9 +10,7 @@
 #include "../../graphics/graphics.h"
 #include "../../graphics/cursor.h"
 #include "../../libc/include/string.h"
-
 #include "../../libc/include/math.h"
-
 #include "../../lin-alg/triangle.h"
 
 #define WAIT_FOR_READ_OK 0
@@ -71,26 +69,16 @@ void update_mouse_pos(int8_t dx, int8_t dy) {
 	} else
 		evt.type = Mouse_moved;
 
-	/*if (LEFT_BUTTON != last_evt.left_btn) {
-		evt.mouse.button = MOUSE_LEFT_BUTTON;
-		evt.type = (MOUSE_LEFT_BUTTON) ? Mouse_released : Mouse_pressed;
-	} else if (RIGHT_BUTTON != last_evt.right_btn) {
-		evt.mouse.button = MOUSE_RIGHT_BUTTON;
-		evt.type = (MOUSE_RIGHT_BUTTON) ? Mouse_released : Mouse_pressed;
-	} else if (MIDDLE_BUTTON != last_evt.middle_btn) {
-		evt.mouse.button = MOUSE_MIDDLE_BUTTON;
-		evt.type = (MOUSE_MIDDLE_BUTTON) ? Mouse_released : Mouse_pressed;
-	}*/
 	refresh_cursor(__mouse_x, __mouse_y);
 	create_mouse_event(evt);
-	//refresh_cursor(__mouse_x, __mouse_y);
+
 	LEFT_BUTTON   = last_evt.left_btn;
 	RIGHT_BUTTON  = last_evt.right_btn;
 	MIDDLE_BUTTON = last_evt.middle_btn;
 }
 
 
-//Mouse functions
+
 void mouse_callback(registers_t *regs) {
 	switch(mouse_cycle) {
 		case 0:
@@ -109,44 +97,40 @@ void mouse_callback(registers_t *regs) {
 }
 
 void mouse_wait(uint8_t a_type) {
-	uint32_t _time_out = 100000; //unsigned int
-	if(a_type==0) {
-		while(_time_out--)
-			if((in_portb(0x64) & 1)==1) return;
-		return;
-	} else {
-		while(_time_out--) //Signal
-			if((in_portb(0x64) & 2)==0) return;
-		return;
-	}
+	uint32_t _time_out = 100000;
+	if(a_type == WAIT_FOR_READ_OK)
+		while(_time_out--) if((in_portb(0x64) & 1) == 1) return;
+	else
+		while(_time_out--) if((in_portb(0x64) & 2) == 0) return;
+	return;
 }
 
 
 void mouse_write(uint8_t a_write) {
-	//Wait to be able to send a command
+	/* Wait to be able to send a command */
 	mouse_wait(WAIT_FOR_WRITE_OK);
-	//Tell the mouse we are sending a command
+	/* Tell the mouse we are sending a command */
 	out_portb(0x64, 0xD4);
-	//Wait for the final part
+	/* Wait for the final part */
 	mouse_wait(WAIT_FOR_WRITE_OK);
-	//Finally write
+	/* Finally write */
 	out_portb(0x60, a_write);
 }
 
 uint8_t mouse_read() {
-	//Get's response from mouse
+	/* Get's response from mouse */
 	mouse_wait(WAIT_FOR_READ_OK);
 	return in_portb(0x60);
 }
 
 void init_mouse() {
-	uint8_t _status;  //unsigned char
+	uint8_t _status;
 
-	//Enable the auxiliary mouse device
+	/* Enable the auxiliary mouse device */
 	mouse_wait(WAIT_FOR_WRITE_OK);
 	out_portb(0x64, 0xA8);
 
-	//Enable the interrupts
+	/* Enable the interrupts */
 	mouse_wait(WAIT_FOR_WRITE_OK);
 	out_portb(0x64, 0x20);
 	mouse_wait(WAIT_FOR_READ_OK);
@@ -156,14 +140,14 @@ void init_mouse() {
 	mouse_wait(WAIT_FOR_WRITE_OK);
 	out_portb(0x60, _status);
 
-	//Tell the mouse to use default settings
+	/* Tell the mouse to use default settings */
 	mouse_write(0xF6);
-	mouse_read();  //Acknowledge
+	mouse_read();  /* Acknowledge */
 
-	//Enable the mouse
+	/* Enable the mouse */
 	mouse_write(0xF4);
-	mouse_read();  //Acknowledge
+	mouse_read();  /* Acknowledge */
 
-	//Setup the mouse handler
+	/* Setup the mouse handler */
 	register_interrupt_handler(IRQ12, mouse_callback);
 }

@@ -9,9 +9,10 @@
 #include "../../cpu/isr.h"
 #include "../../graphics/graphics.h"
 #include "../../libc/include/string.h"
+
 uint8_t SHIFT_DOWN = false;
-uint8_t ALT_DOWN = false;
-uint8_t CTRL_DOWN = false;
+uint8_t ALT_DOWN   = false;
+uint8_t CTRL_DOWN  = false;
 
 char get_char_from_scancode(uint8_t sc) {
 	if(sc > 0x81 && sc <= 0x8B) {
@@ -114,25 +115,15 @@ char get_char_from_scancode(uint8_t sc) {
 static void keyboard_callback(registers_t *regs) {
 	uint8_t sc = in_portb(0x60);
 	switch (sc) {
-		case KEY_LALT:
-			ALT_DOWN = true;
-			break;
+		case KEY_LALT:            ALT_DOWN = true;    break;
 		case KEY_LSHIFT:
-		case KEY_RSHIFT:
-			SHIFT_DOWN = true;
-			break;
+		case KEY_RSHIFT:          SHIFT_DOWN = true;  break;
 		case KEY_LCTRL:
-		case KEY_RCTRL:
-			CTRL_DOWN = true;
-		case KEY_RELEASED_LALT:
-			ALT_DOWN = false;
-			break;
+		case KEY_RCTRL:           CTRL_DOWN = true;   break;
+		case KEY_RELEASED_LALT:   ALT_DOWN = false;   break;
 		case KEY_RELEASED_LSHIFT:
-		case KEY_RELEASED_RSHIFT:
-			SHIFT_DOWN = false;
-			break;
-		case KEY_RELEASED_LCTRL:
-			CTRL_DOWN = false;
+		case KEY_RELEASED_RSHIFT: SHIFT_DOWN = false; break;
+		case KEY_RELEASED_LCTRL:  CTRL_DOWN = false;  break;
 	}
 	event_t evt;
 	evt.type = (sc >= 0x80) ?  Key_released : Key_pressed;

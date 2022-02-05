@@ -65,21 +65,17 @@ void vga_init_palette() {
 }
 
 void put_pixel(uint16_t pos_x, uint16_t pos_y, uint8_t vga_color) {
-	*((uint8_t*)0xA0000 + 320 * pos_y + pos_x) = vga_color;
+	*((VGA_MEM + pos_x) + (pos_y * VGA_HEIGHT)) = vga_color;
 }
 
 uint8_t get_pixel(uint16_t pos_x, uint16_t pos_y) {
-	return *((uint8_t*)0xA0000 + 320 * pos_y + pos_x);
+	return *((VGA_MEM + pos_x) + (pos_y * VGA_HEIGHT));
 }
 
-void clear_pixel(uint16_t pos_x, uint16_t pos_y) {
-	*((uint8_t*)0xA0000 + 320 * pos_y + pos_x) = 0;
-}
-
-///
-///  Bresenham's line algorithm
-///  https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-///
+/**
+ *   Bresenham's line algorithm
+ *   https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+ **/
 void memset_line(uint8_t * restrict v_mem_start, int16_t w, int16_t h, uint8_t color) {
 	uint8_t * v_ram = v_mem_start;
 	int32_t x0 = 0;
@@ -90,14 +86,13 @@ void memset_line(uint8_t * restrict v_mem_start, int16_t w, int16_t h, uint8_t c
 	int32_t sy = ( y0 < h ) ? 1 : -1;
 	int32_t err = dx + dy;  /* error value e_xy */
 	while (!(x0 == w && y0 == h)){  /* loop */
-		//set_memory_with_curosr((v_ram + x0 + (y0 * 320)), x0, y0, color);
 		*(v_ram + x0 + (y0 * 320)) = color;
 		int32_t e2 = 2 * err;
-		if (e2 >= dy) {/* e_xy+e_x > 0 */
+		if (e2 >= dy) {/* e_xy + e_x > 0 */
 			err += dy;
 			x0 += sx;
 		}
-		if (e2 <= dx) {/* e_xy+e_y < 0 */
+		if (e2 <= dx) {/* e_xy + e_y < 0 */
 			err += dx;
 			y0 += sy;
 		}
@@ -109,7 +104,6 @@ void memset_rect(uint8_t * restrict v_mem_start, int16_t w, int16_t h, uint8_t c
 	for (size_t y = 0; y < h * VGA_WIDTH; y += VGA_WIDTH) {
 		for (size_t x = 0; x < w; x++) {
 			*(v_ram + x + y) = color;
-			//set_memory_with_curosr((v_ram + x + y), x, y/VGA_WIDTH, color);
 		}
 	}
 	update_cursor(prev_c, cursor_x, cursor_y);
@@ -120,7 +114,6 @@ uint8_t * memset_5x7font(uint8_t * restrict v_mem_start, uint16_t i, uint8_t col
 	size_t x;
 	for (size_t y = 0; y < FONT_HEIGHT; y++) {
 		for (x = 0; x < FONT_WIDTH; x++) {
-			//if (FONT5X7[i][y][x])
 			if (font_at(i, x, y))
 				*(v_ram + x + (y*VGA_WIDTH)) = color;
 				//set_memory_with_curosr((v_ram + x + (y*VGA_WIDTH)), x, y, color);
@@ -129,6 +122,7 @@ uint8_t * memset_5x7font(uint8_t * restrict v_mem_start, uint16_t i, uint8_t col
 	update_cursor(prev_c, cursor_x, cursor_y);
 	return (uint8_t *)(v_ram + x + 1);
 }
+
 /**
  * scrolls entire screen one character height up
  **/
@@ -146,20 +140,6 @@ void vga_scroll() {
 void vga_append_char(uint16_t i, uint8_t color) {
 	text_cursor = memset_5x7font(text_cursor, i, color);
 }
-
-uint8_t * memset_image(uint8_t * v_mem_start,  vga_image_t img) {
-	uint8_t * v_ram = v_mem_start;
-	size_t x;
-	for (size_t y = 0; y < img.h; y++) {
-		for (x = 0; x < img.w; x++) {
-			if (img.image[y][x])
-				*(v_ram + x + (y*VGA_WIDTH)) = img.image[y][x];
-			else if (!img.transparrent) *(v_ram + x + (y*VGA_WIDTH)) = img.image[y][x];
-		}
-	}
-	return (uint8_t *)(v_ram + x + 1);
-}
-
 
 void place_cursor(uint8_t * v_mem_start){
 	uint8_t * v_ram = v_mem_start;

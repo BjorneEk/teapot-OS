@@ -7,6 +7,9 @@
 
 #include "../libc/include/int.h"
 
+#define OLD_FONT
+#undef  OLD_FONT
+
 #define ALPH_START 0x41
 #define ALPH_END   0x5A
 #define NUM_START  0x30
@@ -39,7 +42,7 @@
 ///
 ///   5 x 7 font containing the following characters in order
 ///
-///	ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ0123456789.,:;!?
+///	ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ0123456789.,:;!?<>()[]=+-/*
 ///
 
 /**
@@ -64,17 +67,20 @@ typedef struct f_col {
 
 /**
  *   size of this font representation is 5 bytes instead of
- *   the 35 bytes a byte arrat would have needed
+ *   the 35 bytes a byte array would have needed
  **/
 typedef struct font_char{
 	f_col_t f[5];
 } font_char_t;
 
 extern char * font_supported_chars;
-//extern const uint8_t FONT5X7[50][7][5];
 
+#ifdef OLD_FONT
+extern const uint8_t FONT5X7[50][7][5];
+#endif
+#ifndef OLD_FONT
 extern const font_char_t FONT5X7_COMPACT[];
-
+#endif
 uint16_t get_idx_from_char(uint8_t c);
 
 uint8_t font_at(uint16_t i, uint8_t x, uint8_t y);
